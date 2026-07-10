@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Panel de donaciones</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f3f4f6;
+    min-height: 100vh;
+    padding: 24px 16px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .header h2 { font-size: 1.3rem; font-weight: 800; color: #0f2d1a; }
+  .header h2 span { color: #2d7a4a; }
+  .header p { font-size: 12.5px; color: #6b7280; margin-top: 2px; }
+  .header-actions { display: flex; gap: 8px; }
+  .btn-refresh {
+    background: #fff; border: 1.5px solid #e5e7eb; border-radius: 10px;
+    padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer; color: #374151;
+  }
+  .btn-close {
+    background: #2d7a4a; color: #fff; border: none; border-radius: 10px;
+    padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  #admin-list { display: flex; flex-direction: column; gap: 10px; }
+  #admin-empty { display: none; text-align: center; color: #9ca3af; font-size: 13px; padding: 40px 0; }
+  .donation-card {
+    background: #fff; border: 1.5px solid #e5e7eb; border-radius: 14px;
+    padding: 14px 16px; display: flex; gap: 14px; align-items: center;
+  }
+  .donation-card img {
+    width: 60px; height: 60px; object-fit: cover; border-radius: 10px;
+    border: 1px solid #e5e7eb; cursor: pointer; flex-shrink: 0;
+  }
+  .donation-info { flex: 1; min-width: 0; }
+  .donation-name { font-size: 14px; font-weight: 700; color: #0f2d1a; }
+  .donation-email { font-size: 12px; color: #6b7280; word-break: break-all; }
+  .donation-meta { font-size: 11.5px; color: #9ca3af; margin-top: 2px; }
+  .donation-right { text-align: right; flex-shrink: 0; }
+  .donation-amount { font-size: 15px; font-weight: 800; color: #2d7a4a; }
+  .donation-link {
+    margin-top: 4px; background: none; border: none; color: #2d7a4a;
+    font-size: 11.5px; font-weight: 600; cursor: pointer; text-decoration: underline;
+  }
+  #receipt-lightbox {
+    display: none; position: fixed; inset: 0; background: #000000cc; z-index: 1100;
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  #receipt-lightbox img { max-width: 90%; max-height: 90%; border-radius: 12px; }
+
+  #login-screen {
+    max-width: 360px; margin: 80px auto 0; background: #fff;
+    border: 1.5px solid #e5e7eb; border-radius: 16px; padding: 32px 28px;
+    text-align: center;
+  }
+  #login-screen h2 { font-size: 1.2rem; font-weight: 800; color: #0f2d1a; margin-bottom: 6px; }
+  #login-screen h2 span { color: #2d7a4a; }
+  #login-screen p { font-size: 13px; color: #6b7280; margin-bottom: 18px; }
+  #login-screen input {
+    width: 100%; padding: 11px 14px; border-radius: 10px; border: 1.5px solid #e5e7eb;
+    font-family: 'Inter', sans-serif; font-size: 14px; outline: none; margin-bottom: 10px;
+  }
+  #login-screen input:focus { border-color: #2d7a4a; }
+  #login-screen button {
+    width: 100%; background: #2d7a4a; color: #fff; border: none; border-radius: 10px;
+    padding: 11px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif;
+  }
+  #login-error { display: none; color: #dc2626; font-size: 12.5px; font-weight: 600; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <h2>Acceso <span>privado</span></h2>
+  <p>Ingresá la clave para ver el panel de donaciones.</p>
+  <input type="password" id="login-pass" placeholder="Clave" onkeydown="if(event.key==='Enter') checkLogin()" />
+  <button onclick="checkLogin()">Entrar →</button>
+  <p id="login-error">⚠️ Clave incorrecta.</p>
+</div>
+
+<div class="wrap" id="admin-wrap" style="display:none;">
+  <div class="header">
+    <div>
+      <h2>Panel de <span>donaciones</span></h2>
+      <p id="admin-count"></p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-refresh" onclick="loadAdminData()">↻ Actualizar</button>
+      <a href="index.html" class="btn-close" style="text-decoration:none;display:inline-block;">✕ Volver</a>
+    </div>
+  </div>
+
+  <div id="admin-list"></div>
+  <p id="admin-empty">Aún no hay donaciones registradas.</p>
+</div>
+
+<!-- Receipt lightbox -->
+<div id="receipt-lightbox" onclick="closeLightbox()">
+  <img id="receipt-lightbox-img" src="" />
+</div>
+
+<script>
+  // ⚠️ Cambiá esta clave por la que quieras usar
+  const ADMIN_PASSWORD = 'donaciones2026';
+
+  function checkLogin() {
+    const val = document.getElementById('login-pass').value;
+    if (val === ADMIN_PASSWORD) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-wrap').style.display = 'block';
+      loadAdminData();
+    } else {
+      document.getElementById('login-error').style.display = 'block';
+      document.getElementById('login-pass').value = '';
+      document.getElementById('login-pass').focus();
+    }
+  }
+
+  function closeLightbox() {
+    document.getElementById('receipt-lightbox').style.display = 'none';
+  }
+
+  function openLightbox(src) {
+    document.getElementById('receipt-lightbox-img').src = src;
+    document.getElementById('receipt-lightbox').style.display = 'flex';
+  }
+
+  async function loadAdminData() {
+    const list = document.getElementById('admin-list');
+    const empty = document.getElementById('admin-empty');
+    const count = document.getElementById('admin-count');
+    list.innerHTML = '<p style="text-align:center;color:#9ca3af;font-size:13px;padding:20px 0;">Cargando…</p>';
+    empty.style.display = 'none';
+
+    try {
+      const res = await window.storage.list('donations:', true);
+      const keys = (res && res.keys) ? res.keys : [];
+
+      if (keys.length === 0) {
+        list.innerHTML = '';
+        empty.style.display = 'block';
+        count.textContent = '0 donaciones';
+        return;
+      }
+
+      const records = [];
+      for (const k of keys) {
+        try {
+          const item = await window.storage.get(k, true);
+          if (item && item.value) records.push(JSON.parse(item.value));
+        } catch (e) { /* skip broken record */ }
+      }
+
+      records.sort((a, b) => new Date(b.date) - new Date(a.date));
+      count.textContent = records.length + (records.length === 1 ? ' donación' : ' donaciones');
+
+      list.innerHTML = records.map(r => {
+        const d = new Date(r.date);
+        const dateStr = d.toLocaleString('es-CO', { dateStyle: 'medium', timeStyle: 'short' });
+        return `
+          <div class="donation-card">
+            <img src="${r.receipt}" onclick="openLightbox('${r.receipt}')" />
+            <div class="donation-info">
+              <div class="donation-name">${escapeHtml(r.name || 'Sin nombre')}</div>
+              <div class="donation-email">${escapeHtml(r.email || '')}</div>
+              <div class="donation-meta">${dateStr} · ${escapeHtml(r.method || '')}</div>
+            </div>
+            <div class="donation-right">
+              <div class="donation-amount">$${r.amount}</div>
+              <button class="donation-link" onclick="openLightbox('${r.receipt}')">Ver factura</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    } catch (e) {
+      list.innerHTML = '<p style="text-align:center;color:#dc2626;font-size:13px;padding:20px 0;">Error al cargar los datos.</p>';
+    }
+  }
+
+  function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+</script>
+</body>
+</html>
