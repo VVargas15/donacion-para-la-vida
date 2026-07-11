@@ -135,6 +135,9 @@
     document.getElementById('receipt-lightbox').style.display = 'flex';
   }
 
+  // 👉 URL de tu Google Apps Script (Web App) — la misma que en index.html
+  const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbw2FUfByBKq9_oKlAh49CuGswNNGmyY-o7T2EHL2XJ5283ozUDYvFYxs-GzwVk8rkEd/exec';
+
   async function loadAdminData() {
     const list = document.getElementById('admin-list');
     const empty = document.getElementById('admin-empty');
@@ -143,22 +146,17 @@
     empty.style.display = 'none';
 
     try {
-      const res = await window.storage.list('donations:', true);
-      const keys = (res && res.keys) ? res.keys : [];
+      const res = await fetch(SHEET_API_URL);
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Error al leer la hoja');
 
-      if (keys.length === 0) {
+      const records = data.records || [];
+
+      if (records.length === 0) {
         list.innerHTML = '';
         empty.style.display = 'block';
         count.textContent = '0 donaciones';
         return;
-      }
-
-      const records = [];
-      for (const k of keys) {
-        try {
-          const item = await window.storage.get(k, true);
-          if (item && item.value) records.push(JSON.parse(item.value));
-        } catch (e) { /* skip broken record */ }
       }
 
       records.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -167,17 +165,18 @@
       list.innerHTML = records.map(r => {
         const d = new Date(r.date);
         const dateStr = d.toLocaleString('es-CO', { dateStyle: 'medium', timeStyle: 'short' });
+        const hasImg = r.receipt && r.receipt.length > 0;
         return `
           <div class="donation-card">
-            <img src="${r.receipt}" onclick="openLightbox('${r.receipt}')" />
+            ${hasImg ? `<img src="${r.receipt}" onclick="openLightbox('${r.receipt}')" />` : `<div style="width:60px;height:60px;border-radius:10px;background:#f3f4f6;flex-shrink:0;"></div>`}
             <div class="donation-info">
               <div class="donation-name">${escapeHtml(r.name || 'Sin nombre')}</div>
               <div class="donation-email">${escapeHtml(r.email || '')}</div>
-              <div class="donation-meta">${dateStr} · ${escapeHtml(r.method || '')}</div>
+              <div class="donation-meta">${dateStr} · ${escapeHtml(r.method || '')} · ${escapeHtml(r.status || '')}</div>
             </div>
             <div class="donation-right">
               <div class="donation-amount">$${r.amount}</div>
-              <button class="donation-link" onclick="openLightbox('${r.receipt}')">Ver factura</button>
+              ${hasImg ? `<button class="donation-link" onclick="openLightbox('${r.receipt}')">Ver factura</button>` : ''}
             </div>
           </div>
         `;

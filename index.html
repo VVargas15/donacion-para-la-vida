@@ -491,26 +491,46 @@
     document.getElementById('receipt-drop').style.display = 'flex';
   }
 
+  // 👉 URL de tu Google Apps Script (Web App)
+  const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbw2FUfByBKq9_oKlAh49CuGswNNGmyY-o7T2EHL2XJ5283ozUDYvFYxs-GzwVk8rkEd/exec';
+
   function confirmCryptoDonation() {
     if (!receiptDataUrl) {
       document.getElementById('receipt-error').style.display = 'block';
       return;
     }
 
-    // Save donation record to shared storage (visible in admin panel)
+    const submitBtn = document.getElementById('receipt-submit-btn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando...';
+
     const record = {
       name: document.getElementById('f-name').value.trim(),
       email: document.getElementById('f-email').value.trim(),
       amount: selAmt,
       method: selectedWallet.name + (selectedWallet.symbol && selectedWallet.symbol !== selectedWallet.name ? ' (' + selectedWallet.symbol + ')' : ''),
-      receipt: receiptDataUrl,
-      date: new Date().toISOString(),
+      receiptBase64: receiptDataUrl,
     };
-    const key = 'donations:' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
-    if (window.storage) {
-      window.storage.set(key, JSON.stringify(record), true).catch(() => {});
-    }
 
+    fetch(SHEET_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(record),
+    })
+      .then(res => res.json())
+      .then(res => {
+        if (!res.success) throw new Error(res.error || 'Error desconocido');
+        showDonationSuccess();
+      })
+      .catch(err => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Confirmar donación →';
+        document.getElementById('receipt-error').textContent = '⚠️ No se pudo enviar. Intentá de nuevo.';
+        document.getElementById('receipt-error').style.display = 'block';
+      });
+  }
+
+  function showDonationSuccess() {
     document.getElementById('receipt-screen').style.display = 'none';
     document.getElementById('success-title').textContent = '¡Gracias por tu donación!';
     document.getElementById('success-msg').textContent =
@@ -555,6 +575,10 @@
     btn.style.cursor = '';
     document.getElementById('spinner').style.display = 'none';
     document.getElementById('btn-text').textContent = '💚 Continuar al pago →';
+    // Reset receipt submit button
+    const submitBtn = document.getElementById('receipt-submit-btn');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Confirmar donación →';
   }
 
 </script>
