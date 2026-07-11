@@ -10,55 +10,14 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'Inter', sans-serif;
-    background: #f3f4f6;
+    background: #e8ede9;
+    color: #0f2d1a;
     min-height: 100vh;
-    padding: 24px 16px;
   }
-  .wrap { max-width: 760px; margin: 0 auto; }
-  .header {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 18px;
-  }
-  .header h2 { font-size: 1.3rem; font-weight: 800; color: #0f2d1a; }
-  .header h2 span { color: #2d7a4a; }
-  .header p { font-size: 12.5px; color: #6b7280; margin-top: 2px; }
-  .header-actions { display: flex; gap: 8px; }
-  .btn-refresh {
-    background: #fff; border: 1.5px solid #e5e7eb; border-radius: 10px;
-    padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer; color: #374151;
-  }
-  .btn-close {
-    background: #2d7a4a; color: #fff; border: none; border-radius: 10px;
-    padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
-  }
-  #admin-list { display: flex; flex-direction: column; gap: 10px; }
-  #admin-empty { display: none; text-align: center; color: #9ca3af; font-size: 13px; padding: 40px 0; }
-  .donation-card {
-    background: #fff; border: 1.5px solid #e5e7eb; border-radius: 14px;
-    padding: 14px 16px; display: flex; gap: 14px; align-items: center;
-  }
-  .donation-card img {
-    width: 60px; height: 60px; object-fit: cover; border-radius: 10px;
-    border: 1px solid #e5e7eb; cursor: pointer; flex-shrink: 0;
-  }
-  .donation-info { flex: 1; min-width: 0; }
-  .donation-name { font-size: 14px; font-weight: 700; color: #0f2d1a; }
-  .donation-email { font-size: 12px; color: #6b7280; word-break: break-all; }
-  .donation-meta { font-size: 11.5px; color: #9ca3af; margin-top: 2px; }
-  .donation-right { text-align: right; flex-shrink: 0; }
-  .donation-amount { font-size: 15px; font-weight: 800; color: #2d7a4a; }
-  .donation-link {
-    margin-top: 4px; background: none; border: none; color: #2d7a4a;
-    font-size: 11.5px; font-weight: 600; cursor: pointer; text-decoration: underline;
-  }
-  #receipt-lightbox {
-    display: none; position: fixed; inset: 0; background: #000000cc; z-index: 1100;
-    align-items: center; justify-content: center; padding: 20px;
-  }
-  #receipt-lightbox img { max-width: 90%; max-height: 90%; border-radius: 12px; }
 
+  /* ===== LOGIN ===== */
   #login-screen {
-    max-width: 360px; margin: 80px auto 0; background: #fff;
+    max-width: 360px; margin: 100px auto 0; background: #fff;
     border: 1.5px solid #e5e7eb; border-radius: 16px; padding: 32px 28px;
     text-align: center;
   }
@@ -67,14 +26,116 @@
   #login-screen p { font-size: 13px; color: #6b7280; margin-bottom: 18px; }
   #login-screen input {
     width: 100%; padding: 11px 14px; border-radius: 10px; border: 1.5px solid #e5e7eb;
+    background: #fafafa; color: #0f2d1a;
     font-family: 'Inter', sans-serif; font-size: 14px; outline: none; margin-bottom: 10px;
   }
-  #login-screen input:focus { border-color: #2d7a4a; }
+  #login-screen input:focus { border-color: #2d7a4a; background: #fff; }
   #login-screen button {
-    width: 100%; background: #2d7a4a; color: #fff; border: none; border-radius: 10px;
+    width: 100%; background: #1a4d2e; color: #fff; border: none; border-radius: 10px;
     padding: 11px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif;
   }
+  #login-screen button:hover { background: #0f2d1a; }
   #login-error { display: none; color: #dc2626; font-size: 12.5px; font-weight: 600; margin-top: 10px; }
+
+  /* ===== DASHBOARD ===== */
+  #admin-wrap { max-width: 1200px; margin: 0 auto; padding: 20px 24px 60px; }
+
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 0; margin-bottom: 20px; border-bottom: 1.5px solid #d9e0da;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-name { font-size: 1.1rem; font-weight: 800; color: #0f2d1a; letter-spacing: -0.3px; }
+  .brand-badge {
+    background: #2d7a4a; color: #fff; font-size: 10.5px; font-weight: 800;
+    padding: 3px 9px; border-radius: 6px; letter-spacing: 0.5px;
+  }
+  .topbar-actions { display: flex; gap: 8px; }
+  .btn {
+    border: none; border-radius: 9px; padding: 8px 14px; font-size: 12.5px;
+    font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-ghost { background: #fff; color: #374151; border: 1.5px solid #e5e7eb; }
+  .btn-ghost:hover { background: #f9fafb; }
+  .btn-green { background: #1a4d2e; color: #fff; }
+  .btn-green:hover { background: #0f2d1a; }
+  .btn-red { background: #dc2626; color: #fff; }
+
+  /* stat cards */
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 20px; }
+  .stat-card {
+    background: #fff; border: 1.5px solid #e5e7eb; border-radius: 14px; padding: 16px 18px;
+  }
+  .stat-label { font-size: 10.5px; font-weight: 700; color: #6b7280; letter-spacing: 0.6px; text-transform: uppercase; }
+  .stat-value { font-size: 1.6rem; font-weight: 800; color: #0f2d1a; margin-top: 8px; }
+  .stat-total .stat-value { color: #0f2d1a; }
+  .stat-amount .stat-value { color: #2d7a4a; }
+
+  /* filters */
+  .filters { display: flex; gap: 10px; margin-bottom: 16px; }
+  .filters input, .filters select {
+    background: #fff; border: 1.5px solid #e5e7eb; border-radius: 10px;
+    color: #0f2d1a; font-family: 'Inter', sans-serif; font-size: 13px; padding: 10px 14px; outline: none;
+  }
+  .filters input { flex: 1; }
+  .filters input:focus, .filters select:focus { border-color: #2d7a4a; }
+
+  /* table */
+  .table-wrap {
+    background: #fff; border: 1.5px solid #e5e7eb; border-radius: 14px; overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    text-align: left; font-size: 10.5px; font-weight: 700; color: #6b7280;
+    letter-spacing: 0.5px; text-transform: uppercase; padding: 12px 16px;
+    background: #f9fafb; border-bottom: 1.5px solid #e5e7eb; white-space: nowrap;
+  }
+  tbody td { padding: 12px 16px; border-bottom: 1px solid #f0f1f2; vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #f9fafb; }
+  .cell-name { font-weight: 700; color: #0f2d1a; }
+  .cell-email { color: #6b7280; font-size: 12px; }
+  .cell-amount { font-weight: 800; color: #2d7a4a; }
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 10.5px; font-weight: 700;
+  }
+  .badge-pendiente { background: #fef3c7; color: #b45309; }
+  .badge-verificado { background: #f0fdf4; color: #166534; }
+  .badge-rechazado { background: #f3f4f6; color: #6b7280; }
+  .actions-cell { display: flex; gap: 6px; flex-wrap: wrap; }
+  .act-btn {
+    border: none; border-radius: 7px; padding: 6px 10px; font-size: 11.5px; font-weight: 700;
+    cursor: pointer; font-family: 'Inter', sans-serif; white-space: nowrap;
+  }
+  .act-ver { background: #f3f4f6; color: #374151; }
+  .act-ver:hover { background: #e5e7eb; }
+  .act-verificar { background: #1a4d2e; color: #fff; }
+  .act-verificar:hover { background: #0f2d1a; }
+  .act-rechazar { background: transparent; color: #dc2626; border: 1.5px solid #fecaca; }
+  .act-rechazar:hover { background: #fef2f2; }
+  .act-borrar { background: #dc2626; color: #fff; }
+  .act-borrar:hover { background: #b91c1c; }
+
+  #admin-empty { display: none; text-align: center; color: #9ca3af; font-size: 13px; padding: 50px 0; }
+  #admin-loading { text-align: center; color: #9ca3af; font-size: 13px; padding: 50px 0; }
+  #admin-error { display: none; text-align: center; padding: 40px 20px; }
+  #admin-error p:first-child { color: #dc2626; font-size: 13.5px; font-weight: 700; }
+  #admin-error p:last-child { color: #9ca3af; font-size: 11.5px; margin-top: 8px; word-break: break-all; }
+
+  #receipt-lightbox {
+    display: none; position: fixed; inset: 0; background: #000000cc; z-index: 1100;
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  #receipt-lightbox img { max-width: 90%; max-height: 90%; border-radius: 12px; }
+
+  @media (max-width: 600px) {
+    .stats { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 900px) {
+    .table-wrap { overflow-x: auto; }
+    table { min-width: 800px; }
+  }
 </style>
 </head>
 <body>
@@ -88,20 +149,60 @@
   <p id="login-error">⚠️ Clave incorrecta.</p>
 </div>
 
-<div class="wrap" id="admin-wrap" style="display:none;">
-  <div class="header">
-    <div>
-      <h2>Panel de <span>donaciones</span></h2>
-      <p id="admin-count"></p>
+<!-- DASHBOARD -->
+<div id="admin-wrap" style="display:none;">
+
+  <div class="topbar">
+    <div class="brand">
+      <span class="brand-name">Admin</span>
+      <span class="brand-badge">PANEL</span>
     </div>
-    <div class="header-actions">
-      <button class="btn-refresh" onclick="loadAdminData()">↻ Actualizar</button>
-      <a href="index.html" class="btn-close" style="text-decoration:none;display:inline-block;">✕ Volver</a>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="loadAdminData()">↻ Actualizar</button>
+      <button class="btn btn-ghost" onclick="exportCSV()">⭳ CSV</button>
+      <button class="btn btn-green" onclick="logout()">Salir</button>
     </div>
   </div>
 
-  <div id="admin-list"></div>
-  <p id="admin-empty">Aún no hay donaciones registradas.</p>
+  <div class="stats">
+    <div class="stat-card stat-total">
+      <div class="stat-label">Total registros</div>
+      <div class="stat-value" id="stat-total">0</div>
+    </div>
+    <div class="stat-card stat-amount">
+      <div class="stat-label">Total recaudado</div>
+      <div class="stat-value" id="stat-amount">$0</div>
+    </div>
+  </div>
+
+  <div class="filters">
+    <input type="text" id="search-input" placeholder="Buscar por nombre o correo..." oninput="renderTable()" />
+  </div>
+
+  <div class="table-wrap">
+    <div id="admin-loading">Cargando…</div>
+    <div id="admin-error">
+      <p>Error al cargar los datos.</p>
+      <p id="admin-error-detail"></p>
+    </div>
+    <p id="admin-empty">Aún no hay donaciones registradas.</p>
+    <table id="admin-table" style="display:none;">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Monto</th>
+          <th>Método</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="admin-tbody"></tbody>
+    </table>
+  </div>
+
 </div>
 
 <!-- Receipt lightbox -->
@@ -112,6 +213,11 @@
 <script>
   // ⚠️ Cambiá esta clave por la que quieras usar
   const ADMIN_PASSWORD = 'donaciones2026';
+
+  // 👉 URL de tu Google Apps Script (Web App) — la misma que en index.html
+  const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbxY8WRLPHwDPkIqHrjM6ueUhFLD_EErokLglw-dp644dsbkpiaqB-P5Cw2FtbyxVD3o/exec';
+
+  let allRecords = [];
 
   function checkLogin() {
     const val = document.getElementById('login-pass').value;
@@ -126,64 +232,148 @@
     }
   }
 
+  function logout() {
+    document.getElementById('admin-wrap').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'block';
+    document.getElementById('login-pass').value = '';
+  }
+
   function closeLightbox() {
     document.getElementById('receipt-lightbox').style.display = 'none';
   }
 
   function openLightbox(src) {
+    if (!src) return;
     document.getElementById('receipt-lightbox-img').src = src;
     document.getElementById('receipt-lightbox').style.display = 'flex';
   }
 
-  // 👉 URL de tu Google Apps Script (Web App) — la misma que en index.html
-  const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbxY8WRLPHwDPkIqHrjM6ueUhFLD_EErokLglw-dp644dsbkpiaqB-P5Cw2FtbyxVD3o/exec';
-
   async function loadAdminData() {
-    const list = document.getElementById('admin-list');
+    const loading = document.getElementById('admin-loading');
+    const errorBox = document.getElementById('admin-error');
     const empty = document.getElementById('admin-empty');
-    const count = document.getElementById('admin-count');
-    list.innerHTML = '<p style="text-align:center;color:#9ca3af;font-size:13px;padding:20px 0;">Cargando…</p>';
+    const table = document.getElementById('admin-table');
+
+    loading.style.display = 'block';
+    errorBox.style.display = 'none';
     empty.style.display = 'none';
+    table.style.display = 'none';
 
     try {
       const res = await fetch(SHEET_API_URL);
       const data = await res.json();
       if (!data.success) throw new Error(data.error || 'Error al leer la hoja');
 
-      const records = data.records || [];
-
-      if (records.length === 0) {
-        list.innerHTML = '';
-        empty.style.display = 'block';
-        count.textContent = '0 donaciones';
-        return;
-      }
-
-      records.sort((a, b) => new Date(b.date) - new Date(a.date));
-      count.textContent = records.length + (records.length === 1 ? ' donación' : ' donaciones');
-
-      list.innerHTML = records.map(r => {
-        const d = new Date(r.date);
-        const dateStr = d.toLocaleString('es-CO', { dateStyle: 'medium', timeStyle: 'short' });
-        const hasImg = r.receipt && r.receipt.length > 0;
-        return `
-          <div class="donation-card">
-            ${hasImg ? `<img src="${r.receipt}" onclick="openLightbox('${r.receipt}')" />` : `<div style="width:60px;height:60px;border-radius:10px;background:#f3f4f6;flex-shrink:0;"></div>`}
-            <div class="donation-info">
-              <div class="donation-name">${escapeHtml(r.name || 'Sin nombre')}</div>
-              <div class="donation-email">${escapeHtml(r.email || '')}</div>
-              <div class="donation-meta">${dateStr} · ${escapeHtml(r.method || '')} · ${escapeHtml(r.status || '')}</div>
-            </div>
-            <div class="donation-right">
-              <div class="donation-amount">$${r.amount}</div>
-              ${hasImg ? `<button class="donation-link" onclick="openLightbox('${r.receipt}')">Ver factura</button>` : ''}
-            </div>
-          </div>
-        `;
-      }).join('');
+      allRecords = data.records || [];
+      loading.style.display = 'none';
+      renderTable();
     } catch (e) {
-      list.innerHTML = '<p style="text-align:center;color:#dc2626;font-size:13px;padding:20px 0;">Error al cargar los datos.</p>';
+      loading.style.display = 'none';
+      errorBox.style.display = 'block';
+      document.getElementById('admin-error-detail').textContent = 'Detalle técnico: ' + (e.message || e.toString());
     }
+  }
+
+  function renderTable() {
+    const empty = document.getElementById('admin-empty');
+    const table = document.getElementById('admin-table');
+    const tbody = document.getElementById('admin-tbody');
+    const search = document.getElementById('search-input').value.trim().toLowerCase();
+
+    // Stats (sobre el total, no sobre el filtrado)
+    document.getElementById('stat-total').textContent = allRecords.length;
+    const totalAmount = allRecords.reduce((sum, r) => sum + (parseFloat(r.amount) || 0), 0);
+    document.getElementById('stat-amount').textContent = '$' + totalAmount.toLocaleString('es-CO');
+
+    let filtered = allRecords.filter(r => {
+      return !search ||
+        (r.name || '').toLowerCase().includes(search) ||
+        (r.email || '').toLowerCase().includes(search);
+    });
+
+    filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    if (filtered.length === 0) {
+      table.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+
+    empty.style.display = 'none';
+    table.style.display = 'table';
+
+    tbody.innerHTML = filtered.map(r => {
+      const d = new Date(r.date);
+      const dateStr = isNaN(d) ? '' : d.toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      const statusClass = r.status === 'Verificado' ? 'badge-verificado' : r.status === 'Rechazado' ? 'badge-rechazado' : 'badge-pendiente';
+      const hasReceipt = r.receipt && r.receipt.length > 0;
+
+      return `
+        <tr>
+          <td style="color:#6b7280;">${escapeHtml(r.id || '')}</td>
+          <td class="cell-name">${escapeHtml(r.name || 'Sin nombre')}</td>
+          <td class="cell-email">${escapeHtml(r.email || '')}</td>
+          <td class="cell-amount">$${escapeHtml(String(r.amount || 0))}</td>
+          <td>${escapeHtml(r.method || '')}</td>
+          <td><span class="badge ${statusClass}">${escapeHtml(r.status || 'Pendiente')}</span></td>
+          <td style="color:#9ca3af;">${dateStr}</td>
+          <td>
+            <div class="actions-cell">
+              ${hasReceipt ? `<button class="act-btn act-ver" onclick="openLightbox('${r.receipt}')">Ver</button>` : ''}
+              <button class="act-btn act-verificar" onclick="setStatus('${r.id}','Verificado')">Verificar</button>
+              <button class="act-btn act-rechazar" onclick="setStatus('${r.id}','Rechazado')">Rechazar</button>
+              <button class="act-btn act-borrar" onclick="deleteRow('${r.id}')">Borrar</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  async function setStatus(id, status) {
+    try {
+      const res = await fetch(SHEET_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'updateStatus', id: id, status: status }),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error);
+      const rec = allRecords.find(r => r.id === id);
+      if (rec) rec.status = status;
+      renderTable();
+    } catch (e) {
+      alert('No se pudo actualizar el estado: ' + e.message);
+    }
+  }
+
+  async function deleteRow(id) {
+    if (!confirm('¿Seguro que querés borrar este registro? Esta acción no se puede deshacer.')) return;
+    try {
+      const res = await fetch(SHEET_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'delete', id: id }),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error);
+      allRecords = allRecords.filter(r => r.id !== id);
+      renderTable();
+    } catch (e) {
+      alert('No se pudo borrar: ' + e.message);
+    }
+  }
+
+  function exportCSV() {
+    if (allRecords.length === 0) return;
+    const headers = ['ID', 'Fecha', 'Nombre', 'Correo', 'Monto', 'Método', 'Estado'];
+    const rows = allRecords.map(r => [r.id, r.date, r.name, r.email, r.amount, r.method, r.status]);
+    const csv = [headers, ...rows].map(row => row.map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'donaciones.csv';
+    link.click();
   }
 
   function escapeHtml(str) {
