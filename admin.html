@@ -326,8 +326,8 @@
   }
 
   function openDetail(id) {
-    const r = allRecords.find(x => x.id === id);
-    if (!r) return;
+    const r = allRecords.find(x => String(x.id) === String(id));
+    if (!r) { console.warn('No se encontró el registro con id', id); return; }
 
     const d = new Date(r.date);
     const dateStr = isNaN(d) ? '' : d.toLocaleString('es-CO', { dateStyle: 'medium', timeStyle: 'short' });
@@ -357,6 +357,19 @@
   function closeDetail() {
     document.getElementById('detail-modal').style.display = 'none';
   }
+
+  // Un solo listener en la tabla, en vez de onclick="" en cada botón:
+  // así funciona sin importar qué caracteres tenga el nombre/correo/id.
+  document.getElementById('admin-tbody').addEventListener('click', function (e) {
+    const btn = e.target.closest('.act-btn');
+    if (!btn) return;
+    const id = btn.dataset.id;
+    const action = btn.dataset.action;
+    if (action === 'ver') openDetail(id);
+    else if (action === 'verificar') setStatus(id, 'Verificado');
+    else if (action === 'rechazar') setStatus(id, 'Rechazado');
+    else if (action === 'borrar') deleteRow(id);
+  });
 
   async function loadAdminData() {
     const loading = document.getElementById('admin-loading');
@@ -431,10 +444,10 @@
           <td style="color:#9ca3af;">${dateStr}</td>
           <td>
             <div class="actions-cell">
-              <button class="act-btn act-ver" onclick="openDetail('${r.id}')">Ver</button>
-              <button class="act-btn act-verificar" onclick="setStatus('${r.id}','Verificado')">Verificar</button>
-              <button class="act-btn act-rechazar" onclick="setStatus('${r.id}','Rechazado')">Rechazar</button>
-              <button class="act-btn act-borrar" onclick="deleteRow('${r.id}')">Borrar</button>
+              <button class="act-btn act-ver" data-action="ver" data-id="${escapeHtml(String(r.id || ''))}">Ver</button>
+              <button class="act-btn act-verificar" data-action="verificar" data-id="${escapeHtml(String(r.id || ''))}">Verificar</button>
+              <button class="act-btn act-rechazar" data-action="rechazar" data-id="${escapeHtml(String(r.id || ''))}">Rechazar</button>
+              <button class="act-btn act-borrar" data-action="borrar" data-id="${escapeHtml(String(r.id || ''))}">Borrar</button>
             </div>
           </td>
         </tr>
@@ -451,7 +464,7 @@
       });
       const data = await res.json();
       if (!data.success) throw new Error(data.error);
-      const rec = allRecords.find(r => r.id === id);
+      const rec = allRecords.find(r => String(r.id) === String(id));
       if (rec) rec.status = status;
       renderTable();
     } catch (e) {
@@ -469,7 +482,7 @@
       });
       const data = await res.json();
       if (!data.success) throw new Error(data.error);
-      allRecords = allRecords.filter(r => r.id !== id);
+      allRecords = allRecords.filter(r => String(r.id) !== String(id));
       renderTable();
     } catch (e) {
       alert('No se pudo borrar: ' + e.message);
