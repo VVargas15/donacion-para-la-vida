@@ -206,6 +206,12 @@
 
   <div class="filters">
     <input type="text" id="search-input" placeholder="Buscar por nombre o correo..." oninput="renderTable()" />
+    <select id="status-filter" onchange="renderTable()">
+      <option value="">Todos los estados</option>
+      <option value="Pendiente">Pendiente</option>
+      <option value="Verificado">Verificado</option>
+      <option value="Rechazado">Rechazado</option>
+    </select>
   </div>
 
   <div class="table-wrap">
@@ -383,6 +389,7 @@
     const table = document.getElementById('admin-table');
     const tbody = document.getElementById('admin-tbody');
     const search = document.getElementById('search-input').value.trim().toLowerCase();
+    const statusFilter = document.getElementById('status-filter').value;
 
     // Stats (sobre el total, no sobre el filtrado)
     document.getElementById('stat-total').textContent = allRecords.length;
@@ -390,9 +397,11 @@
     document.getElementById('stat-amount').textContent = '$' + totalAmount.toLocaleString('es-CO');
 
     let filtered = allRecords.filter(r => {
-      return !search ||
+      const matchesSearch = !search ||
         (r.name || '').toLowerCase().includes(search) ||
         (r.email || '').toLowerCase().includes(search);
+      const matchesStatus = !statusFilter || r.status === statusFilter;
+      return matchesSearch && matchesStatus;
     });
 
     filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
