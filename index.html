@@ -216,6 +216,12 @@
       <p id="success-countdown" style="margin-top:12px;font-size:12px;color:#9ca3af;"></p>
     </div>
 
+    <div class="success-box" id="limit-reached-box" style="display:none;">
+      <div class="check">💚</div>
+      <h3>¡Gracias por todo!</h3>
+      <p>Ya completamos el cupo de donaciones para esta campaña. Agradecemos muchísimo a todas las personas que se sumaron a cambiar vidas. ¡Nos vemos en la próxima!</p>
+    </div>
+
     <!-- CRYPTO SCREEN -->
     <div id="crypto-screen" style="display:none;">
       <button onclick="backToForm()" style="background:none;border:none;cursor:pointer;color:#2d7a4a;font-size:13px;font-weight:600;padding:0;margin-bottom:1.2rem;display:flex;align-items:center;gap:4px;">← Volver</button>
@@ -495,6 +501,24 @@
 
   // 👉 URL de tu Google Apps Script (Web App)
   const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbzwTE3mZVaalCbx17L1T_OrJIkztxRh2thOebAiVQUC-S5aeJzXA1Vu416AT00QoDUH/exec';
+
+  // 👉 Cupo máximo de donantes para esta campaña
+  const MAX_DONORS = 5;
+
+  async function checkDonationLimit() {
+    try {
+      const res = await fetch(SHEET_API_URL);
+      const data = await res.json();
+      const count = (data.records || []).length;
+      if (count >= MAX_DONORS) {
+        document.getElementById('form-wrap').style.display = 'none';
+        document.getElementById('limit-reached-box').style.display = 'block';
+      }
+    } catch (e) {
+      // Si falla la verificación, dejamos el formulario visible por defecto
+    }
+  }
+  checkDonationLimit();
 
   function confirmCryptoDonation() {
     if (!receiptDataUrl) {
