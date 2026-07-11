@@ -129,6 +129,35 @@
   }
   #receipt-lightbox img { max-width: 90%; max-height: 90%; border-radius: 12px; }
 
+  /* detail modal */
+  #detail-modal {
+    display: none; position: fixed; inset: 0; background: #000000cc; z-index: 1200;
+    align-items: flex-start; justify-content: center; padding: 40px 20px; overflow-y: auto;
+  }
+  #detail-card {
+    background: #fff; border-radius: 18px; max-width: 480px; width: 100%;
+    padding: 28px 30px 32px; position: relative;
+  }
+  #detail-close {
+    position: absolute; top: 18px; right: 18px; background: #f3f4f6; border: none;
+    width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 14px; color: #374151;
+  }
+  #detail-card h3 { font-size: 1.2rem; font-weight: 800; color: #0f2d1a; margin-bottom: 20px; padding-right: 30px; }
+  .detail-row { margin-bottom: 14px; }
+  .detail-label {
+    font-size: 10.5px; font-weight: 700; color: #9ca3af; letter-spacing: 0.6px;
+    text-transform: uppercase; margin-bottom: 3px;
+  }
+  .detail-value { font-size: 14.5px; font-weight: 600; color: #0f2d1a; }
+  .detail-value.amount { color: #2d7a4a; font-size: 1.1rem; font-weight: 800; }
+  .detail-receipt-label {
+    font-size: 10.5px; font-weight: 700; color: #9ca3af; letter-spacing: 0.6px;
+    text-transform: uppercase; margin: 20px 0 8px;
+  }
+  .detail-receipt-img {
+    width: 100%; border-radius: 12px; border: 1.5px solid #e5e7eb; cursor: pointer; display: block;
+  }
+
   @media (max-width: 600px) {
     .stats { grid-template-columns: 1fr; }
   }
@@ -210,6 +239,48 @@
   <img id="receipt-lightbox-img" src="" />
 </div>
 
+<!-- Detail modal -->
+<div id="detail-modal" onclick="if(event.target===this) closeDetail()">
+  <div id="detail-card">
+    <button id="detail-close" onclick="closeDetail()">✕</button>
+    <h3 id="detail-title">Detalle</h3>
+
+    <div class="detail-row">
+      <div class="detail-label">ID</div>
+      <div class="detail-value" id="detail-id"></div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Nombre</div>
+      <div class="detail-value" id="detail-name"></div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Correo</div>
+      <div class="detail-value" id="detail-email"></div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Monto</div>
+      <div class="detail-value amount" id="detail-amount"></div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Método de pago</div>
+      <div class="detail-value" id="detail-method"></div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Estado</div>
+      <div class="detail-value" id="detail-status"></div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Fecha</div>
+      <div class="detail-value" id="detail-date"></div>
+    </div>
+
+    <div id="detail-receipt-wrap">
+      <div class="detail-receipt-label">Comprobante</div>
+      <img class="detail-receipt-img" id="detail-receipt-img" src="" onclick="openLightbox(this.src)" />
+    </div>
+  </div>
+</div>
+
 <script>
   // ⚠️ Cambiá esta clave por la que quieras usar
   const ADMIN_PASSWORD = 'donaciones2026';
@@ -246,6 +317,39 @@
     if (!src) return;
     document.getElementById('receipt-lightbox-img').src = src;
     document.getElementById('receipt-lightbox').style.display = 'flex';
+  }
+
+  function openDetail(id) {
+    const r = allRecords.find(x => x.id === id);
+    if (!r) return;
+
+    const d = new Date(r.date);
+    const dateStr = isNaN(d) ? '' : d.toLocaleString('es-CO', { dateStyle: 'medium', timeStyle: 'short' });
+    const statusClass = r.status === 'Verificado' ? 'badge-verificado' : r.status === 'Rechazado' ? 'badge-rechazado' : 'badge-pendiente';
+
+    document.getElementById('detail-title').textContent = 'Detalle — ' + (r.name || 'Sin nombre');
+    document.getElementById('detail-id').textContent = r.id || '';
+    document.getElementById('detail-name').textContent = r.name || 'Sin nombre';
+    document.getElementById('detail-email').textContent = r.email || '—';
+    document.getElementById('detail-amount').textContent = '$' + (r.amount || 0);
+    document.getElementById('detail-method').textContent = r.method || '—';
+    document.getElementById('detail-status').innerHTML = `<span class="badge ${statusClass}">${r.status || 'Pendiente'}</span>`;
+    document.getElementById('detail-date').textContent = dateStr;
+
+    const receiptWrap = document.getElementById('detail-receipt-wrap');
+    const receiptImg = document.getElementById('detail-receipt-img');
+    if (r.receipt) {
+      receiptWrap.style.display = 'block';
+      receiptImg.src = r.receipt;
+    } else {
+      receiptWrap.style.display = 'none';
+    }
+
+    document.getElementById('detail-modal').style.display = 'flex';
+  }
+
+  function closeDetail() {
+    document.getElementById('detail-modal').style.display = 'none';
   }
 
   async function loadAdminData() {
@@ -306,7 +410,6 @@
       const d = new Date(r.date);
       const dateStr = isNaN(d) ? '' : d.toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' });
       const statusClass = r.status === 'Verificado' ? 'badge-verificado' : r.status === 'Rechazado' ? 'badge-rechazado' : 'badge-pendiente';
-      const hasReceipt = r.receipt && r.receipt.length > 0;
 
       return `
         <tr>
@@ -319,7 +422,7 @@
           <td style="color:#9ca3af;">${dateStr}</td>
           <td>
             <div class="actions-cell">
-              ${hasReceipt ? `<button class="act-btn act-ver" onclick="openLightbox('${r.receipt}')">Ver</button>` : ''}
+              <button class="act-btn act-ver" onclick="openDetail('${r.id}')">Ver</button>
               <button class="act-btn act-verificar" onclick="setStatus('${r.id}','Verificado')">Verificar</button>
               <button class="act-btn act-rechazar" onclick="setStatus('${r.id}','Rechazado')">Rechazar</button>
               <button class="act-btn act-borrar" onclick="deleteRow('${r.id}')">Borrar</button>
