@@ -334,9 +334,9 @@
   }
 
   const cryptoWallets = [
-    { name: 'Binance Pay', symbol: 'Binance Pay', icon: 'B', color: '#f0b90b', addr: '123456789' },
-    { name: 'Bitcoin', symbol: 'BTC', icon: '₿', color: '#f7931a', addr: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa' },
-    { name: 'Tether', symbol: 'USDT (TRC20)', icon: '₮', color: '#26a17b', addr: 'TN9RRaXkCFtTXRso2GdTZxSxxwYdrTHpiy' },
+    { name: 'Binance Pay', symbol: 'Binance Pay', icon: 'B', color: '#f0b90b', addr: '1118270464', qrImage: 'qr-binance.jpeg' },
+    { name: 'Bitcoin', symbol: 'BTC', icon: '₿', color: '#f7931a', addr: '16d2NhK9XCFoNDobVY2kPPAt92ee93axrP', qrImage: 'qr-btc.jpeg' },
+    { name: 'Tether', symbol: 'USDT (TRC20)', icon: '₮', color: '#26a17b', addr: 'TM7C1tpPaUEMVpEALmrgRMZ6GDsTSdMK7B', qrImage: 'qr-usdt.jpeg' },
   ];
 
   let selectedWallet = cryptoWallets[0];
@@ -420,7 +420,9 @@
       bankRow.style.display = 'none';
       qrRow.style.display = 'block';
       addrRow.style.display = 'flex';
-      document.getElementById('coin-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(w.addr)}&bgcolor=fafafa&color=0f2d1a&margin=6`;
+      document.getElementById('coin-qr').src = w.qrImage
+        ? w.qrImage
+        : `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(w.addr)}&bgcolor=fafafa&color=0f2d1a&margin=6`;
       document.getElementById('coin-addr').textContent = w.addr;
       document.getElementById('copy-btn').textContent = 'Copiar';
       document.getElementById('copy-btn').style.background = '#2d7a4a';
