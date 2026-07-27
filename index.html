@@ -340,6 +340,10 @@
   }
 
   const cryptoWallets = [
+    { name: 'PayPal', symbol: 'PayPal', icon: 'P', color: '#0070ba', bank: true, addr: 'fenixgestiondenominas@gmail.com', lines: [
+      '<div style="font-size:20px;font-weight:800;color:#0f2d1a;text-align:center;word-break:break-all;margin-bottom:14px;">fenixgestiondenominas@gmail.com</div>',
+      '<div style="text-align:center;"><button id="bank-copy-btn" onclick="copyBankValue()" style="background:#2d7a4a;color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;">Copiar</button></div>',
+    ] },
     { name: 'Binance Pay', symbol: 'Binance Pay', icon: 'B', color: '#f0b90b', addr: '1118270464', qrImage: 'qr-binance.jpeg' },
     { name: 'Bitcoin', symbol: 'BTC', icon: '₿', color: '#f7931a', addr: '16d2NhK9XCFoNDobVY2kPPAt92ee93axrP', qrImage: 'qr-btc.jpeg' },
     { name: 'Tether', symbol: 'USDT (TRC20)', icon: '₮', color: '#26a17b', addr: 'TM7C1tpPaUEMVpEALmrgRMZ6GDsTSdMK7B', qrImage: 'qr-usdt.jpeg' },
@@ -452,6 +456,17 @@
     selectedWallet._activeAddr = n.addr;
   }
 
+  function copyBankValue() {
+    if (!selectedWallet.addr) return;
+    navigator.clipboard.writeText(selectedWallet.addr).then(() => {
+      const btn = document.getElementById('bank-copy-btn');
+      if (!btn) return;
+      btn.textContent = '✓ Copiado';
+      btn.style.background = '#166534';
+      setTimeout(() => { btn.textContent = 'Copiar'; btn.style.background = '#2d7a4a'; }, 2000);
+    });
+  }
+
   function copySelected() {
     const addr = selectedWallet._activeAddr || selectedWallet.addr;
     if (!addr) return;
@@ -507,9 +522,9 @@
 
   async function checkDonationLimit() {
     try {
-      const res = await fetch(SHEET_API_URL);
+      const res = await fetch(SHEET_API_URL + '?action=count');
       const data = await res.json();
-      const count = (data.records || []).length;
+      const count = data.count || 0;
       if (count >= MAX_DONORS) {
         document.getElementById('form-wrap').style.display = 'none';
         document.getElementById('limit-reached-box').style.display = 'block';

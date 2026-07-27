@@ -174,7 +174,7 @@
   <h2>Acceso <span>privado</span></h2>
   <p>Ingresá la clave para ver el panel de donaciones.</p>
   <input type="password" id="login-pass" placeholder="Clave" onkeydown="if(event.key==='Enter') checkLogin()" />
-  <button onclick="checkLogin()">Entrar →</button>
+  <button id="login-btn" onclick="checkLogin()">Entrar →</button>
   <p id="login-error">⚠️ Clave incorrecta.</p>
 </div>
 
@@ -288,28 +288,47 @@
 </div>
 
 <script>
-  // ⚠️ Cambiá esta clave por la que quieras usar
-  const ADMIN_PASSWORD = 'donaciones2026';
+  // 👉 La clave de administrador ya NO vive acá. El navegador solo la
+  // envía al backend (Apps Script), que es quien decide si es correcta.
+  let adminKey = '';
 
   // 👉 URL de tu Google Apps Script (Web App) — la misma que en index.html
   const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbxBpzBNxBKJwJasAgzhUEOWLBPJGzOhFnPB7v-YyCWTxaVL-ZHre9wQbTlVwxcCfrLI/exec';
 
   let allRecords = [];
 
-  function checkLogin() {
+  async function checkLogin() {
     const val = document.getElementById('login-pass').value;
-    if (val === ADMIN_PASSWORD) {
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('admin-wrap').style.display = 'block';
-      loadAdminData();
-    } else {
+    const btn = document.getElementById('login-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Verificando...'; }
+    document.getElementById('login-error').style.display = 'none';
+
+    try {
+      const res = await fetch(SHEET_API_URL + '?key=' + encodeURIComponent(val));
+      const data = await res.json();
+
+      if (data.success) {
+        adminKey = val;
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('admin-wrap').style.display = 'block';
+        allRecords = data.records || [];
+        renderTable();
+      } else {
+        document.getElementById('login-error').style.display = 'block';
+        document.getElementById('login-pass').value = '';
+        document.getElementById('login-pass').focus();
+      }
+    } catch (e) {
+      document.getElementById('login-error').textContent = '⚠️ No se pudo conectar. Intentá de nuevo.';
       document.getElementById('login-error').style.display = 'block';
-      document.getElementById('login-pass').value = '';
-      document.getElementById('login-pass').focus();
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
     }
   }
 
   function logout() {
+    adminKey = '';
+    allRecords = [];
     document.getElementById('admin-wrap').style.display = 'none';
     document.getElementById('login-screen').style.display = 'block';
     document.getElementById('login-pass').value = '';
@@ -383,7 +402,7 @@
     table.style.display = 'none';
 
     try {
-      const res = await fetch(SHEET_API_URL);
+      const res = await fetch(SHEET_API_URL + '?key=' + encodeURIComponent(adminKey));
       const data = await res.json();
       if (!data.success) throw new Error(data.error || 'Error al leer la hoja');
 
@@ -460,7 +479,7 @@
       const res = await fetch(SHEET_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'updateStatus', id: id, status: status }),
+        body: JSON.stringify({ action: 'updateStatus', id: id, status: status, key: adminKey }),
       });
       const data = await res.json();
       if (!data.success) throw new Error(data.error);
@@ -478,7 +497,7 @@
       const res = await fetch(SHEET_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'delete', id: id }),
+        body: JSON.stringify({ action: 'delete', id: id, key: adminKey }),
       });
       const data = await res.json();
       if (!data.success) throw new Error(data.error);
