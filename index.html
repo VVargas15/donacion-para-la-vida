@@ -174,10 +174,10 @@
 
       <div class="section-label">¿Cuánto querés donar?</div>
       <div class="amounts" id="amts">
-        <button class="amt active" data-val="25">$25</button>
+        <button class="amt active" data-val="20">$20</button>
         <button class="amt" data-val="30">$30</button>
-        <button class="amt" data-val="35">$35</button>
         <button class="amt" data-val="40">$40</button>
+        <button class="amt" data-val="50">$50</button>
       </div>
       <span class="custom-link" onclick="toggleCustom()">Ingresar otro monto</span>
       <div class="custom-wrap" id="custom-wrap">
@@ -293,7 +293,7 @@
 
 
 <script>
-  let selAmt = 25;
+  let selAmt = 20;
   let receiptDataUrl = null;
 
   document.getElementById('amts').addEventListener('click', e => {
@@ -335,7 +335,7 @@
     document.getElementById('f-email').value = '';
     document.getElementById('custom-amt').value = '';
     document.querySelectorAll('.amt').forEach((x,i) => x.classList.toggle('active', i===0));
-    selAmt = 25;
+    selAmt = 20;
     setCustomError(false);
   }
 
@@ -518,7 +518,7 @@
   const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbz4hD-OTEVApIIFDPfj2OeKd9Ov62XDVFRW6xTs0DcTSIVRbZI2mXDYjyST_bXOiS4V/exec';
 
   // 👉 Cupo máximo de donantes para esta campaña
-  const MAX_DONORS = 1000;
+  const MAX_DONORS = 100000;
 
   async function checkDonationLimit() {
     try {
@@ -627,7 +627,7 @@
     document.getElementById('custom-wrap').style.display = 'none';
     // Reset buttons
     document.querySelectorAll('.amt').forEach((x,i) => x.classList.toggle('active', i===0));
-    selAmt = 25;
+    selAmt = 20;
     setCustomError(false);
     // Reset donate button
     const btn = document.getElementById('donate-btn');
