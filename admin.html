@@ -220,10 +220,12 @@ function vDel() {
 }
 
 // ---------- Configuración ----------
-const DEF = { maxDonors: 100000, accent: '#2d7a4a', heroImage: '', heroY: 50, heroZoom: 100, heroTitle: 'Cada *donación* cambia una vida.', heroSub: 'Tu aporte llega directo a niños en comunidades vulnerables de América Latina.', campBeneficiary: '', campTitle: '', campWho: '', campUse: '', formSub: '', emailSubject: '', emailBody: '' };
+const DEF = { maxDonors: 100000, accent: '#2d7a4a', heroImage: '', heroX: 50, heroY: 50, heroZoom: 100, heroTitle: 'Cada *donación* cambia una vida.', heroSub: 'Tu aporte llega directo a niños en comunidades vulnerables de América Latina.', campBeneficiary: '', campTitle: '', campWho: '', campUse: '', formSub: '', emailSubject: '', emailBody: '' };
 const TABS = [['apariencia', 'Apariencia'], ['textos', 'Textos de la página'], ['cupo', 'Cupo de donantes'], ['metodos', 'Métodos de pago'], ['correo', 'Correo de confirmación'], ['clave', 'Cambiar clave de acceso']];
 const SW = ['#2d7a4a', '#1d6fb8', '#7c3aed', '#be185d', '#c2410c', '#0f766e'];
 let draft = null, ctab = 'apariencia';
+const hv = (v, d) => isNaN(parseFloat(v)) ? d : parseFloat(v);
+function hpos() { const b = $('hbg'); if (!b) return; const x = hv(draft.heroX, 50), y = hv(draft.heroY, 50), z = hv(draft.heroZoom, 100) / 100; b.style.backgroundPosition = x + '% ' + y + '%'; b.style.transformOrigin = x + '% ' + y + '%'; b.style.transform = 'scale(' + z + ')'; }
 const fld = (k, label, ph, rows, hint) => `<div class="f"><label for="d-${k}">${label}</label>${rows ? `<textarea id="d-${k}" data-k="${k}" placeholder="${esc(ph)}" style="min-height:${rows}px">${esc(draft[k])}</textarea>` : `<input id="d-${k}" data-k="${k}" placeholder="${esc(ph)}" value="${esc(draft[k])}">`}${hint ? `<small>${hint}</small>` : ''}</div>`;
 const qrBox = (x, c) => !x.qr ? '' : `<div class="row" style="margin:-4px 0 14px 0;align-items:center;gap:12px">
   ${c.qr ? `<img src="${esc(c.qr)}" alt="QR de ${esc(x.name)}" style="width:72px;height:72px;object-fit:contain;border-radius:10px;border:1px solid var(--line);background:#fff">` : '<div style="width:72px;height:72px;border:1.5px dashed var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;color:var(--mute);padding:4px">QR original</div>'}
@@ -235,9 +237,11 @@ function vCfg() {
     apariencia: `<div class="sec"><h3>Foto de portada</h3>${draft.heroImage ? `<img src="${esc(draft.heroImage)}" alt="Foto de portada actual" style="width:100%;max-width:340px;height:200px;object-fit:cover;border-radius:12px;border:1px solid var(--line)">` : '<div class="empty" style="max-width:340px;border:1.5px dashed var(--line);border-radius:12px;padding:30px">Se usa la foto original de la página.</div>'}
       <div class="tools" style="margin-top:12px"><label class="btn ghost" style="cursor:pointer">Subir otra foto<input type="file" id="photo" accept="image/*" hidden></label>${draft.heroImage ? '<button class="btn ghost" data-a="nophoto">Volver a la foto original</button>' : ''}</div><small style="color:var(--mute)">Mejor una foto vertical. Se ajusta sola y tarda unos segundos en subir.</small></div>
       ${draft.heroImage ? `<div class="sec"><h3>Ajustar foto</h3>
-        <div id="hprev" style="width:200px;height:250px;border-radius:14px;overflow:hidden;position:relative;border:1px solid var(--line);margin-bottom:12px"><div id="hbg" style="position:absolute;inset:0;background:url('${esc(draft.heroImage)}') 50% ${+draft.heroY || 0}%/cover no-repeat;transform-origin:50% ${+draft.heroY || 0}%;transform:scale(${(+draft.heroZoom || 100) / 100})"></div><div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,40,20,.92) 0%,rgba(10,40,20,.4) 55%,transparent 100%)"></div><div style="position:absolute;left:12px;right:12px;bottom:12px;color:#fff;font-weight:800;font-size:15px;line-height:1.15">Así se ve en la página<br><span style="font-weight:400;font-size:9px;opacity:.7">El texto va sobre la parte de abajo</span></div></div>
-        <div class="f"><label for="d-heroY">Subir o bajar la foto</label><input type="range" id="d-heroY" data-k="heroY" min="0" max="100" value="${+draft.heroY || 0}"><small>Hacia la derecha la foto sube; hacia la izquierda baja. Mirá la vista previa y dejala donde se vea bien la cara.</small></div>
-        <div class="f"><label for="d-heroZoom">Tamaño (zoom)</label><input type="range" id="d-heroZoom" data-k="heroZoom" min="100" max="200" value="${+draft.heroZoom || 100}"></div></div>` : ''}
+        <p style="margin:0 0 10px;color:var(--mute);font-size:13px"><b>Tocá la cara en la vista previa</b> y la foto se acerca a ese punto. Después afiná con los controles.</p>
+        <div id="hprev" style="width:200px;height:250px;border-radius:14px;overflow:hidden;position:relative;border:1px solid var(--line);margin-bottom:12px;cursor:crosshair"><div id="hbg" style="position:absolute;inset:0;background:url('${esc(draft.heroImage)}') ${hv(draft.heroX, 50)}% ${hv(draft.heroY, 50)}%/cover no-repeat;transform-origin:${hv(draft.heroX, 50)}% ${hv(draft.heroY, 50)}%;transform:scale(${hv(draft.heroZoom, 100) / 100})"></div><div style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top,rgba(10,40,20,.92) 0%,rgba(10,40,20,.4) 55%,transparent 100%)"></div><div style="position:absolute;left:12px;right:12px;bottom:12px;color:#fff;font-weight:800;font-size:15px;line-height:1.15;pointer-events:none">Así se ve en la página<br><span style="font-weight:400;font-size:9px;opacity:.7">El texto va sobre la parte de abajo</span></div></div>
+        <div class="f"><label for="d-heroZoom">Tamaño (zoom)</label><input type="range" id="d-heroZoom" data-k="heroZoom" min="100" max="250" value="${hv(draft.heroZoom, 100)}"></div>
+        <div class="f"><label for="d-heroX">Izquierda ↔ derecha</label><input type="range" id="d-heroX" data-k="heroX" min="0" max="100" value="${hv(draft.heroX, 50)}"></div>
+        <div class="f"><label for="d-heroY">Arriba ↕ abajo</label><input type="range" id="d-heroY" data-k="heroY" min="0" max="100" value="${hv(draft.heroY, 50)}"><small>Con la foto sin zoom, a veces solo se puede mover hacia un lado. Subí el tamaño para poder mover en los dos sentidos.</small></div></div>` : ''}
       <div class="sec"><h3>Color principal</h3><div class="row">${SW.map(c => `<button data-a="sw" data-id="${c}" aria-label="Color ${c}" style="width:38px;height:38px;border-radius:50%;border:3px solid ${draft.accent === c ? 'var(--ink)' : '#fff'};background:${c};box-shadow:0 0 0 1px var(--line)"></button>`).join('')}<input type="color" id="d-accent" data-k="accent" value="${esc(draft.accent)}" aria-label="Elegir otro color" style="width:56px;height:40px;padding:2px"></div>
       <button class="btn" id="prev" style="background:${esc(draft.accent)};margin-top:8px" type="button">Así se ve el botón</button></div>`,
     textos: `<div class="sec"><h3>Portada</h3>${fld('heroTitle', 'Título grande', 'Cada *donación* cambia una vida.', 0, 'Poné la palabra resaltada entre asteriscos: *donación*')}${fld('heroSub', 'Frase debajo del título', '', 3)}</div>
@@ -263,10 +267,21 @@ async function changeKey() {
   try { await post({ action: 'changeKey', newKey: nk }); key = nk; $('nk').value = ''; toast('Clave cambiada'); } catch (e) { toast(e.message); }
 }
 function shrink(file, max = 1400, qual = .82) { return new Promise((ok, no) => { const im = new Image(); im.onload = () => { const k = Math.min(1, max / Math.max(im.width, im.height)), c = document.createElement('canvas'); c.width = im.width * k; c.height = im.height * k; c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); ok(c.toDataURL('image/jpeg', qual)); }; im.onerror = () => no(new Error('No se pudo leer la imagen')); im.src = URL.createObjectURL(file); }); }
+$('main').addEventListener('click', e => {
+  const box = e.target.closest && e.target.closest('#hprev'); if (!box || !draft) return;
+  const r = box.getBoundingClientRect(), z = hv(draft.heroZoom, 100) / 100;
+  // punto tocado, convertido a coordenadas de la foto (deshaciendo el zoom actual)
+  const ox = hv(draft.heroX, 50) / 100, oy = hv(draft.heroY, 50) / 100;
+  const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+  const fx = ox + (px - ox) / z, fy = oy + (py - oy) / z;
+  draft.heroX = Math.round(Math.min(1, Math.max(0, fx)) * 100); draft.heroY = Math.round(Math.min(1, Math.max(0, fy)) * 100);
+  if (hv(draft.heroZoom, 100) < 130) draft.heroZoom = 140;
+  vCfg();
+});
 $('main').addEventListener('input', e => {
   const t = e.target; if (!draft) return;
   if (t.dataset.k) { draft[t.dataset.k] = t.value; if (t.dataset.k === 'accent' && $('prev')) $('prev').style.background = t.value; 
-    if ((t.dataset.k === 'heroY' || t.dataset.k === 'heroZoom') && $('hbg')) { const y = +draft.heroY, z = (+draft.heroZoom || 100) / 100; $('hbg').style.backgroundPosition = '50% ' + y + '%'; $('hbg').style.transformOrigin = '50% ' + y + '%'; $('hbg').style.transform = 'scale(' + z + ')'; } }
+    if (['heroX', 'heroY', 'heroZoom'].includes(t.dataset.k)) hpos(); }
   else if (t.dataset.m) { const m = draft.methods[t.dataset.m] = draft.methods[t.dataset.m] || {}; if (t.dataset.f === 'on') m.on = t.checked; else m.addr = t.value; }
 });
 $('main').addEventListener('change', async e => {
