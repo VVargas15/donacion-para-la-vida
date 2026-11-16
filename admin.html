@@ -1,530 +1,241 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Panel de donaciones</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel · Donación Para La Vida</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Inter', sans-serif;
-    background: #e8ede9;
-    color: #0f2d1a;
-    min-height: 100vh;
-  }
-
-  /* ===== LOGIN ===== */
-  #login-screen {
-    max-width: 360px; margin: 100px auto 0; background: #fff;
-    border: 1.5px solid #e5e7eb; border-radius: 16px; padding: 32px 28px;
-    text-align: center;
-  }
-  #login-screen h2 { font-size: 1.2rem; font-weight: 800; color: #0f2d1a; margin-bottom: 6px; }
-  #login-screen h2 span { color: #2d7a4a; }
-  #login-screen p { font-size: 13px; color: #6b7280; margin-bottom: 18px; }
-  #login-screen input {
-    width: 100%; padding: 11px 14px; border-radius: 10px; border: 1.5px solid #e5e7eb;
-    background: #fafafa; color: #0f2d1a;
-    font-family: 'Inter', sans-serif; font-size: 14px; outline: none; margin-bottom: 10px;
-  }
-  #login-screen input:focus { border-color: #2d7a4a; background: #fff; }
-  #login-screen button {
-    width: 100%; background: #1a4d2e; color: #fff; border: none; border-radius: 10px;
-    padding: 11px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif;
-  }
-  #login-screen button:hover { background: #0f2d1a; }
-  #login-error { display: none; color: #dc2626; font-size: 12.5px; font-weight: 600; margin-top: 10px; }
-
-  /* ===== DASHBOARD ===== */
-  #admin-wrap { max-width: 1200px; margin: 0 auto; padding: 20px 24px 60px; }
-
-  .topbar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 0; margin-bottom: 20px; border-bottom: 1.5px solid #d9e0da;
-  }
-  .brand { display: flex; align-items: center; gap: 10px; }
-  .brand-name { font-size: 1.1rem; font-weight: 800; color: #0f2d1a; letter-spacing: -0.3px; }
-  .brand-badge {
-    background: #2d7a4a; color: #fff; font-size: 10.5px; font-weight: 800;
-    padding: 3px 9px; border-radius: 6px; letter-spacing: 0.5px;
-  }
-  .topbar-actions { display: flex; gap: 8px; }
-  .btn {
-    border: none; border-radius: 9px; padding: 8px 14px; font-size: 12.5px;
-    font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
-    display: inline-flex; align-items: center; gap: 6px;
-  }
-  .btn-ghost { background: #fff; color: #374151; border: 1.5px solid #e5e7eb; }
-  .btn-ghost:hover { background: #f9fafb; }
-  .btn-green { background: #1a4d2e; color: #fff; }
-  .btn-green:hover { background: #0f2d1a; }
-  .btn-red { background: #dc2626; color: #fff; }
-
-  /* stat cards */
-  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 20px; }
-  .stat-card {
-    background: #fff; border: 1.5px solid #e5e7eb; border-radius: 14px; padding: 16px 18px;
-  }
-  .stat-label { font-size: 10.5px; font-weight: 700; color: #6b7280; letter-spacing: 0.6px; text-transform: uppercase; }
-  .stat-value { font-size: 1.6rem; font-weight: 800; color: #0f2d1a; margin-top: 8px; }
-  .stat-total .stat-value { color: #0f2d1a; }
-  .stat-amount .stat-value { color: #2d7a4a; }
-
-  /* filters */
-  .filters { display: flex; gap: 10px; margin-bottom: 16px; }
-  .filters input, .filters select {
-    background: #fff; border: 1.5px solid #e5e7eb; border-radius: 10px;
-    color: #0f2d1a; font-family: 'Inter', sans-serif; font-size: 13px; padding: 10px 14px; outline: none;
-  }
-  .filters input { flex: 1; }
-  .filters input:focus, .filters select:focus { border-color: #2d7a4a; }
-
-  /* table */
-  .table-wrap {
-    background: #fff; border: 1.5px solid #e5e7eb; border-radius: 14px; overflow: hidden;
-  }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  thead th {
-    text-align: left; font-size: 10.5px; font-weight: 700; color: #6b7280;
-    letter-spacing: 0.5px; text-transform: uppercase; padding: 12px 16px;
-    background: #f9fafb; border-bottom: 1.5px solid #e5e7eb; white-space: nowrap;
-  }
-  tbody td { padding: 12px 16px; border-bottom: 1px solid #f0f1f2; vertical-align: middle; }
-  tbody tr:last-child td { border-bottom: none; }
-  tbody tr:hover { background: #f9fafb; }
-  .cell-name { font-weight: 700; color: #0f2d1a; }
-  .cell-email { color: #6b7280; font-size: 12px; }
-  .cell-amount { font-weight: 800; color: #2d7a4a; }
-  .badge {
-    display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 10.5px; font-weight: 700;
-  }
-  .badge-pendiente { background: #fef3c7; color: #b45309; }
-  .badge-verificado { background: #f0fdf4; color: #166534; }
-  .badge-rechazado { background: #f3f4f6; color: #6b7280; }
-  .actions-cell { display: flex; gap: 6px; flex-wrap: wrap; }
-  .act-btn {
-    border: none; border-radius: 7px; padding: 6px 10px; font-size: 11.5px; font-weight: 700;
-    cursor: pointer; font-family: 'Inter', sans-serif; white-space: nowrap;
-  }
-  .act-ver { background: #f3f4f6; color: #374151; }
-  .act-ver:hover { background: #e5e7eb; }
-  .act-verificar { background: #1a4d2e; color: #fff; }
-  .act-verificar:hover { background: #0f2d1a; }
-  .act-rechazar { background: transparent; color: #dc2626; border: 1.5px solid #fecaca; }
-  .act-rechazar:hover { background: #fef2f2; }
-  .act-borrar { background: #dc2626; color: #fff; }
-  .act-borrar:hover { background: #b91c1c; }
-
-  #admin-empty { display: none; text-align: center; color: #9ca3af; font-size: 13px; padding: 50px 0; }
-  #admin-loading { text-align: center; color: #9ca3af; font-size: 13px; padding: 50px 0; }
-  #admin-error { display: none; text-align: center; padding: 40px 20px; }
-  #admin-error p:first-child { color: #dc2626; font-size: 13.5px; font-weight: 700; }
-  #admin-error p:last-child { color: #9ca3af; font-size: 11.5px; margin-top: 8px; word-break: break-all; }
-
-  #receipt-lightbox {
-    display: none; position: fixed; inset: 0; background: #000000cc; z-index: 1100;
-    align-items: center; justify-content: center; padding: 20px;
-  }
-  #receipt-lightbox img { max-width: 90%; max-height: 90%; border-radius: 12px; }
-
-  /* detail modal */
-  #detail-modal {
-    display: none; position: fixed; inset: 0; background: #000000cc; z-index: 1200;
-    align-items: flex-start; justify-content: center; padding: 40px 20px; overflow-y: auto;
-  }
-  #detail-card {
-    background: #fff; border-radius: 18px; max-width: 480px; width: 100%;
-    padding: 28px 30px 32px; position: relative;
-  }
-  #detail-close {
-    position: absolute; top: 18px; right: 18px; background: #f3f4f6; border: none;
-    width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 14px; color: #374151;
-  }
-  #detail-card h3 { font-size: 1.2rem; font-weight: 800; color: #0f2d1a; margin-bottom: 20px; padding-right: 30px; }
-  .detail-row { margin-bottom: 14px; }
-  .detail-label {
-    font-size: 10.5px; font-weight: 700; color: #9ca3af; letter-spacing: 0.6px;
-    text-transform: uppercase; margin-bottom: 3px;
-  }
-  .detail-value { font-size: 14.5px; font-weight: 600; color: #0f2d1a; }
-  .detail-value.amount { color: #2d7a4a; font-size: 1.1rem; font-weight: 800; }
-  .detail-receipt-label {
-    font-size: 10.5px; font-weight: 700; color: #9ca3af; letter-spacing: 0.6px;
-    text-transform: uppercase; margin: 20px 0 8px;
-  }
-  .detail-receipt-img {
-    width: 100%; border-radius: 12px; border: 1.5px solid #e5e7eb; cursor: pointer; display: block;
-  }
-
-  @media (max-width: 600px) {
-    .stats { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 900px) {
-    .table-wrap { overflow-x: auto; }
-    table { min-width: 800px; }
-  }
+:root{--ink:#10281a;--side:#12301f;--paper:#f5f6f2;--card:#fff;--line:#e4e7df;--mute:#6b7568;--g:#2d7a4a;--amber:#b45309;--amberbg:#fef3c7;--red:#b91c1c;--redbg:#fee2e2;--okbg:#dcfce7}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--paper);color:var(--ink);font-size:14px}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--g);outline-offset:2px}
+#login{max-width:340px;margin:18vh auto 0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px}
+#login h2{font-size:1.3rem;margin-bottom:6px}#login p{color:var(--mute);margin-bottom:16px}
+input,textarea,select{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:9px;font:inherit;background:#fff;color:var(--ink)}
+textarea{min-height:150px;resize:vertical;line-height:1.5}
+.btn{background:var(--g);color:#fff;border:0;border-radius:9px;padding:10px 16px;font-weight:600}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn.red{background:var(--red)}.btn.sm{padding:6px 11px;font-size:12.5px;border-radius:7px}
+.err{color:var(--red);margin-top:10px;display:none}
+#app{display:none;min-height:100vh}
+aside{position:fixed;inset:0 auto 0 0;width:220px;background:var(--side);color:#cfe0d4;padding:22px 14px;display:flex;flex-direction:column;gap:4px}
+aside .brand{color:#fff;font-weight:800;font-size:1.02rem;padding:0 10px 18px;line-height:1.25}
+aside .brand small{display:block;color:#8fb09b;font-weight:500;font-size:12px;margin-top:3px}
+.nav{display:flex;justify-content:space-between;align-items:center;background:none;border:0;color:inherit;text-align:left;padding:10px;border-radius:9px;font-size:14px;font-weight:500}
+.nav:hover{background:rgba(255,255,255,.07)}
+.nav.on{background:#fff;color:var(--ink);font-weight:700}
+.nav i{font-style:normal;font-size:11.5px;background:rgba(255,255,255,.16);border-radius:20px;padding:1px 8px}
+.nav.on i{background:var(--okbg);color:var(--g)}
+aside .out{margin-top:auto}
+main{margin-left:220px;padding:30px 34px;max-width:1100px}
+h1{font-size:1.5rem;font-weight:800;margin-bottom:4px}.sub{color:var(--mute);margin-bottom:22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+.stat b{display:block;font-size:1.7rem;font-weight:800;margin-top:4px}.stat span{color:var(--mute);font-size:13px}
+.bar{height:8px;background:var(--line);border-radius:8px;overflow:hidden;margin-top:10px}.bar div{height:100%;background:var(--g)}
+.tools{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}.tools input{flex:1;min-width:180px}.tools select{width:auto}
+.wrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;min-width:720px}
+th{text-align:left;font-size:12.5px;color:var(--mute);font-weight:600;padding:11px 14px;border-bottom:1px solid var(--line)}
+td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}tr:last-child td{border:0}
+.badge{padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;background:var(--amberbg);color:var(--amber)}
+.badge.Verificado{background:var(--okbg);color:var(--g)}.badge.Rechazado,.badge.Eliminado{background:var(--redbg);color:var(--red)}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.empty{padding:34px;text-align:center;color:var(--mute)}
+.row{display:flex;align-items:center;gap:10px;margin-bottom:8px}.row .nm{width:110px;font-weight:600;flex-shrink:0}.row .val{flex:1}
+.hbar{flex:1;height:22px;background:var(--line);border-radius:6px;overflow:hidden}.hbar div{height:100%;background:var(--g);border-radius:6px}
+.row .amt{width:80px;text-align:right;font-weight:700}
+.f{margin-bottom:14px}.f label{display:block;font-weight:600;margin-bottom:6px}.f small{color:var(--mute);display:block;margin-top:4px}
+.sec{margin-bottom:22px}.sec h3{font-size:1.02rem;margin-bottom:12px}
+.sw{display:flex;align-items:center;gap:8px;width:120px;flex-shrink:0;font-weight:600}.sw input{width:auto}
+#modal{position:fixed;inset:0;background:rgba(10,25,15,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}
+#modal .box{background:#fff;border-radius:14px;padding:24px;max-width:460px;width:100%;max-height:90vh;overflow:auto}
+#modal dl{display:grid;grid-template-columns:90px 1fr;gap:8px 12px;margin:14px 0}#modal dt{color:var(--mute)}#modal dd{word-break:break-word}
+#modal img{width:100%;border-radius:10px;border:1px solid var(--line);margin-top:6px}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:9px;display:none;z-index:30}
+@media(max-width:800px){aside{position:static;width:auto;flex-direction:row;flex-wrap:wrap;padding:12px}aside .brand{width:100%;padding-bottom:6px}aside .out{margin:0 0 0 auto}main{margin:0;padding:20px 16px}}
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
-<div id="login-screen">
-  <h2>Acceso <span>privado</span></h2>
-  <p>Ingresá la clave para ver el panel de donaciones.</p>
-  <input type="password" id="login-pass" placeholder="Clave" onkeydown="if(event.key==='Enter') checkLogin()" />
-  <button id="login-btn" onclick="checkLogin()">Entrar →</button>
-  <p id="login-error">⚠️ Clave incorrecta.</p>
+<div id="login">
+  <h2>Acceso privado</h2>
+  <p>Ingresá la clave para abrir el panel.</p>
+  <input type="password" id="pass" placeholder="Clave" autocomplete="current-password">
+  <button class="btn" id="loginBtn" style="width:100%;margin-top:12px">Entrar</button>
+  <p class="err" id="loginErr">Clave incorrecta.</p>
 </div>
 
-<!-- DASHBOARD -->
-<div id="admin-wrap" style="display:none;">
-
-  <div class="topbar">
-    <div class="brand">
-      <span class="brand-name">Admin</span>
-      <span class="brand-badge">PANEL</span>
-    </div>
-    <div class="topbar-actions">
-      <button class="btn btn-ghost" onclick="loadAdminData()">↻ Actualizar</button>
-      <button class="btn btn-ghost" onclick="exportCSV()">⭳ CSV</button>
-      <button class="btn btn-green" onclick="logout()">Salir</button>
-    </div>
-  </div>
-
-  <div class="stats">
-    <div class="stat-card stat-total">
-      <div class="stat-label">Total registros</div>
-      <div class="stat-value" id="stat-total">0</div>
-    </div>
-    <div class="stat-card stat-amount">
-      <div class="stat-label">Total recaudado</div>
-      <div class="stat-value" id="stat-amount">$0</div>
-    </div>
-  </div>
-
-  <div class="filters">
-    <input type="text" id="search-input" placeholder="Buscar por nombre o correo..." oninput="renderTable()" />
-    <select id="status-filter" onchange="renderTable()">
-      <option value="">Todos los estados</option>
-      <option value="Pendiente">Pendiente</option>
-      <option value="Verificado">Verificado</option>
-      <option value="Rechazado">Rechazado</option>
-    </select>
-  </div>
-
-  <div class="table-wrap">
-    <div id="admin-loading">Cargando…</div>
-    <div id="admin-error">
-      <p>Error al cargar los datos.</p>
-      <p id="admin-error-detail"></p>
-    </div>
-    <p id="admin-empty">Aún no hay donaciones registradas.</p>
-    <table id="admin-table" style="display:none;">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Correo</th>
-          <th>Monto</th>
-          <th>Método</th>
-          <th>Estado</th>
-          <th>Fecha</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody id="admin-tbody"></tbody>
-    </table>
-  </div>
-
+<div id="app">
+  <aside>
+    <div class="brand">Donación Para La Vida<small>Panel de administración</small></div>
+    <button class="nav" data-v="inicio">Inicio</button>
+    <button class="nav" data-v="donaciones">Donaciones <i id="n-don">0</i></button>
+    <button class="nav" data-v="finanzas">Finanzas</button>
+    <button class="nav" data-v="eliminados">Eliminados <i id="n-del">0</i></button>
+    <button class="nav" data-v="config">Configuración</button>
+    <button class="nav out" id="logout">Salir</button>
+  </aside>
+  <main id="main"></main>
 </div>
 
-<!-- Receipt lightbox -->
-<div id="receipt-lightbox" onclick="closeLightbox()">
-  <img id="receipt-lightbox-img" src="" />
-</div>
-
-<!-- Detail modal -->
-<div id="detail-modal" onclick="if(event.target===this) closeDetail()">
-  <div id="detail-card">
-    <button id="detail-close" onclick="closeDetail()">✕</button>
-    <h3 id="detail-title">Detalle</h3>
-
-    <div class="detail-row">
-      <div class="detail-label">ID</div>
-      <div class="detail-value" id="detail-id"></div>
-    </div>
-    <div class="detail-row">
-      <div class="detail-label">Nombre</div>
-      <div class="detail-value" id="detail-name"></div>
-    </div>
-    <div class="detail-row">
-      <div class="detail-label">Correo</div>
-      <div class="detail-value" id="detail-email"></div>
-    </div>
-    <div class="detail-row">
-      <div class="detail-label">Monto</div>
-      <div class="detail-value amount" id="detail-amount"></div>
-    </div>
-    <div class="detail-row">
-      <div class="detail-label">Método de pago</div>
-      <div class="detail-value" id="detail-method"></div>
-    </div>
-    <div class="detail-row">
-      <div class="detail-label">Estado</div>
-      <div class="detail-value" id="detail-status"></div>
-    </div>
-    <div class="detail-row">
-      <div class="detail-label">Fecha</div>
-      <div class="detail-value" id="detail-date"></div>
-    </div>
-
-    <div id="detail-receipt-wrap">
-      <div class="detail-receipt-label">Comprobante</div>
-      <img class="detail-receipt-img" id="detail-receipt-img" src="" onclick="openLightbox(this.src)" />
-    </div>
-  </div>
-</div>
+<div id="modal"><div class="box" id="modalBox"></div></div>
+<div id="toast"></div>
 
 <script>
-  // 👉 La clave de administrador ya NO vive acá. El navegador solo la
-  // envía al backend (Apps Script), que es quien decide si es correcta.
-  let adminKey = '';
+const API = 'https://script.google.com/macros/s/AKfycbxBpzBNxBKJwJasAgzhUEOWLBPJGzOhFnPB7v-YyCWTxaVL-ZHre9wQbTlVwxcCfrLI/exec';
+const METHODS = [
+  { name: 'PayPal', label: 'Correo', addr: 'fenixgestiondenominas@gmail.com' },
+  { name: 'Binance Pay', label: 'ID de Binance', addr: '1118270464' },
+  { name: 'Bitcoin', label: 'Dirección BTC', addr: '16d2NhK9XCFoNDobVY2kPPAt92ee93axrP' },
+  { name: 'Tether', label: 'Dirección USDT (TRC20)', addr: 'TM7C1tpPaUEMVpEALmrgRMZ6GDsTSdMK7B' },
+];
+let key = '', recs = [], cfg = {}, view = 'inicio', q = '', st = '';
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money = n => '$' + (Math.round(n * 100) / 100).toLocaleString('es-CO');
+const amt = r => parseFloat(r.amount) || 0;
+const live = () => recs.filter(r => r.status !== 'Eliminado');
+const fmtDate = d => { const x = new Date(d); return isNaN(x) ? '' : x.toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' }); };
+function toast(t) { const e = $('toast'); e.textContent = t; e.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(() => e.style.display = 'none', 2600); }
 
-  // 👉 URL de tu Google Apps Script (Web App) — la misma que en index.html
-  const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbxBpzBNxBKJwJasAgzhUEOWLBPJGzOhFnPB7v-YyCWTxaVL-ZHre9wQbTlVwxcCfrLI/exec';
+async function post(body) {
+  const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ ...body, key }) });
+  const d = await r.json(); if (!d.success) throw new Error(d.error || 'Error'); return d;
+}
+async function load() {
+  const [a, c] = await Promise.all([
+    fetch(API + '?key=' + encodeURIComponent(key)).then(r => r.json()),
+    fetch(API + '?action=config').then(r => r.json()),
+  ]);
+  if (!a.success) throw new Error(a.error || 'No autorizado');
+  recs = a.records || []; cfg = c.config || {};
+}
 
-  let allRecords = [];
+async function login() {
+  key = $('pass').value; $('loginBtn').disabled = true; $('loginErr').style.display = 'none';
+  try { await load(); $('login').style.display = 'none'; $('app').style.display = 'block'; go('inicio'); }
+  catch (e) { $('loginErr').textContent = e.message === 'No autorizado' ? 'Clave incorrecta.' : 'No se pudo conectar. Intentá de nuevo.'; $('loginErr').style.display = 'block'; $('pass').value = ''; }
+  $('loginBtn').disabled = false;
+}
+$('loginBtn').onclick = login;
+$('pass').onkeydown = e => { if (e.key === 'Enter') login(); };
+$('logout').onclick = () => { key = ''; recs = []; $('app').style.display = 'none'; $('login').style.display = 'block'; $('pass').value = ''; };
+document.querySelectorAll('.nav[data-v]').forEach(b => b.onclick = () => go(b.dataset.v));
 
-  async function checkLogin() {
-    const val = document.getElementById('login-pass').value;
-    const btn = document.getElementById('login-btn');
-    if (btn) { btn.disabled = true; btn.textContent = 'Verificando...'; }
-    document.getElementById('login-error').style.display = 'none';
+async function refresh(msg) { try { await load(); render(); if (msg) toast(msg); } catch (e) { toast(e.message); } }
+function go(v) { view = v; render(); }
+function render() {
+  document.querySelectorAll('.nav[data-v]').forEach(b => b.classList.toggle('on', b.dataset.v === view));
+  $('n-don').textContent = live().length; $('n-del').textContent = recs.length - live().length;
+  ({ inicio: vInicio, donaciones: vDon, finanzas: vFin, eliminados: vDel, config: vCfg })[view]();
+}
 
-    try {
-      const res = await fetch(SHEET_API_URL + '?key=' + encodeURIComponent(val));
-      const data = await res.json();
+// ---------- Inicio ----------
+function vInicio() {
+  const L = live(), max = cfg.maxDonors || 1000, pct = Math.min(100, L.length / max * 100);
+  const by = s => L.filter(r => r.status === s);
+  const last = [...L].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+  $('main').innerHTML = `<h1>Inicio</h1><p class="sub">Así va la campaña hoy.</p>
+  <div class="grid">
+    <div class="card stat"><span>Donaciones registradas</span><b>${L.length}</b></div>
+    <div class="card stat"><span>Por revisar</span><b>${by('Pendiente').length}</b></div>
+    <div class="card stat"><span>Verificado</span><b>${money(by('Verificado').reduce((s, r) => s + amt(r), 0))}</b></div>
+    <div class="card stat"><span>Cupo usado</span><b>${L.length} de ${max}</b><div class="bar"><div style="width:${pct}%"></div></div></div>
+  </div>
+  <h3 style="margin-bottom:10px">Últimas donaciones</h3>
+  <div class="wrap">${last.length ? `<table><tbody>${last.map(r => `<tr><td><b>${esc(r.name)}</b><br><span style="color:var(--mute)">${esc(r.email)}</span></td><td>${money(amt(r))}</td><td>${esc(r.method)}</td><td><span class="badge ${esc(r.status)}">${esc(r.status)}</span></td><td style="color:var(--mute)">${fmtDate(r.date)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">Todavía no hay donaciones.</div>'}</div>`;
+}
 
-      if (data.success) {
-        adminKey = val;
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('admin-wrap').style.display = 'block';
-        allRecords = data.records || [];
-        renderTable();
-      } else {
-        document.getElementById('login-error').style.display = 'block';
-        document.getElementById('login-pass').value = '';
-        document.getElementById('login-pass').focus();
-      }
-    } catch (e) {
-      document.getElementById('login-error').textContent = '⚠️ No se pudo conectar. Intentá de nuevo.';
-      document.getElementById('login-error').style.display = 'block';
-    } finally {
-      if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
-    }
-  }
+// ---------- Donaciones ----------
+function vDon() {
+  $('main').innerHTML = `<h1>Donaciones</h1><p class="sub">Revisá cada comprobante y confirmá el pago.</p>
+  <div class="tools"><input id="q" placeholder="Buscar por nombre o correo" value="${esc(q)}">
+  <select id="st"><option value="">Todos los estados</option>${['Pendiente', 'Verificado', 'Rechazado'].map(s => `<option ${st === s ? 'selected' : ''}>${s}</option>`).join('')}</select>
+  <button class="btn ghost" id="rf">Actualizar</button><button class="btn ghost" id="csv">Descargar CSV</button></div>
+  <div class="wrap" id="tb"></div>`;
+  $('q').oninput = e => { q = e.target.value; table(); }; $('st').onchange = e => { st = e.target.value; table(); };
+  $('rf').onclick = () => refresh('Datos actualizados'); $('csv').onclick = csv; table();
+}
+function table() {
+  const s = q.trim().toLowerCase();
+  const L = live().filter(r => (!s || (r.name + ' ' + r.email).toLowerCase().includes(s)) && (!st || r.status === st)).sort((a, b) => new Date(b.date) - new Date(a.date));
+  $('tb').innerHTML = !L.length ? '<div class="empty">No hay donaciones con ese filtro.</div>' :
+    `<table><thead><tr><th>Donante</th><th>Monto</th><th>Método</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody>${L.map(r => `<tr>
+    <td><b>${esc(r.name || 'Sin nombre')}</b><br><span style="color:var(--mute)">${esc(r.email)}</span></td><td><b>${money(amt(r))}</b></td><td>${esc(r.method)}</td>
+    <td><span class="badge ${esc(r.status)}">${esc(r.status)}</span></td><td style="color:var(--mute)">${fmtDate(r.date)}</td>
+    <td><div class="acts"><button class="btn ghost sm" data-a="ver" data-id="${esc(r.id)}">Ver</button><button class="btn sm" data-a="ok" data-id="${esc(r.id)}">Verificar</button><button class="btn ghost sm" data-a="no" data-id="${esc(r.id)}">Rechazar</button><button class="btn ghost sm" data-a="trash" data-id="${esc(r.id)}">Eliminar</button></div></td></tr>`).join('')}</tbody></table>`;
+}
+function csv() {
+  const rows = [['ID', 'Fecha', 'Nombre', 'Correo', 'Monto', 'Método', 'Estado'], ...live().map(r => [r.id, r.date, r.name, r.email, r.amount, r.method, r.status])];
+  const t = rows.map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + t], { type: 'text/csv;charset=utf-8' })); a.download = 'donaciones.csv'; a.click();
+}
 
-  function logout() {
-    adminKey = '';
-    allRecords = [];
-    document.getElementById('admin-wrap').style.display = 'none';
-    document.getElementById('login-screen').style.display = 'block';
-    document.getElementById('login-pass').value = '';
-  }
+// ---------- Finanzas ----------
+function vFin() {
+  const L = live(), sum = s => L.filter(r => r.status === s).reduce((t, r) => t + amt(r), 0);
+  const group = f => { const m = {}; L.filter(r => r.status !== 'Rechazado').forEach(r => { const k = f(r); m[k] = (m[k] || 0) + amt(r); }); return Object.entries(m); };
+  const bars = (list, mx) => list.length ? list.map(([k, v]) => `<div class="row"><span class="nm">${esc(k)}</span><div class="hbar"><div style="width:${mx ? v / mx * 100 : 0}%"></div></div><span class="amt">${money(v)}</span></div>`).join('') : '<p class="empty">Sin datos todavía.</p>';
+  const byM = group(r => r.method || 'Sin método').sort((a, b) => b[1] - a[1]);
+  const byMonth = group(r => { const d = new Date(r.date); return isNaN(d) ? 'Sin fecha' : d.toLocaleDateString('es-CO', { month: 'short', year: 'numeric' }); });
+  $('main').innerHTML = `<h1>Finanzas</h1><p class="sub">Los montos rechazados y eliminados no se cuentan.</p>
+  <div class="grid"><div class="card stat"><span>Verificado</span><b>${money(sum('Verificado'))}</b></div><div class="card stat"><span>Pendiente de revisar</span><b>${money(sum('Pendiente'))}</b></div><div class="card stat"><span>Rechazado</span><b>${money(sum('Rechazado'))}</b></div></div>
+  <div class="card sec"><h3>Por método de pago</h3>${bars(byM, Math.max(0, ...byM.map(x => x[1])))}</div>
+  <div class="card sec"><h3>Por mes</h3>${bars(byMonth, Math.max(0, ...byMonth.map(x => x[1])))}</div>`;
+}
 
-  function closeLightbox() {
-    document.getElementById('receipt-lightbox').style.display = 'none';
-  }
+// ---------- Eliminados ----------
+function vDel() {
+  const D = recs.filter(r => r.status === 'Eliminado');
+  $('main').innerHTML = `<h1>Eliminados</h1><p class="sub">Podés restaurar una donación o borrarla para siempre.</p><div class="wrap">${!D.length ? '<div class="empty">No hay donaciones eliminadas.</div>' :
+    `<table><tbody>${D.map(r => `<tr><td><b>${esc(r.name)}</b><br><span style="color:var(--mute)">${esc(r.email)}</span></td><td>${money(amt(r))}</td><td>${esc(r.method)}</td><td style="color:var(--mute)">${fmtDate(r.date)}</td>
+    <td><div class="acts"><button class="btn sm" data-a="restore" data-id="${esc(r.id)}">Restaurar</button><button class="btn red sm" data-a="purge" data-id="${esc(r.id)}">Borrar para siempre</button></div></td></tr>`).join('')}</tbody></table>`}</div>`;
+}
 
-  function openLightbox(src) {
-    if (!src) return;
-    document.getElementById('receipt-lightbox-img').src = src;
-    document.getElementById('receipt-lightbox').style.display = 'flex';
-  }
+// ---------- Configuración ----------
+function vCfg() {
+  const m = cfg.methods || {};
+  $('main').innerHTML = `<h1>Configuración</h1><p class="sub">Los cambios se aplican en la página de donaciones al guardar.</p>
+  <div class="card sec"><h3>Cupo de donantes</h3><div class="f"><label for="max">Máximo de donaciones</label><input id="max" type="number" min="1" value="${esc(cfg.maxDonors || 1000)}"><small>Al llegar a este número, el formulario se reemplaza por el mensaje de cierre.</small></div></div>
+  <div class="card sec"><h3>Métodos de pago</h3>${METHODS.map((x, i) => { const c = m[x.name] || {}; return `<div class="row"><label class="sw"><input type="checkbox" id="on${i}" ${c.on === false ? '' : 'checked'}>${x.name}</label><input class="val" id="ad${i}" aria-label="${esc(x.label)}" placeholder="${esc(x.label)}" value="${esc(c.addr || x.addr)}"></div>`; }).join('')}<small style="color:var(--mute)">Desmarcá un método para ocultarlo a los donantes. Los códigos QR no cambian desde acá.</small></div>
+  <div class="card sec"><h3>Correo de confirmación</h3><div class="f"><label for="sub">Asunto</label><input id="sub" value="${esc(cfg.emailSubject)}"></div><div class="f"><label for="body">Mensaje</label><textarea id="body">${esc(cfg.emailBody)}</textarea><small>Usá {nombre} y {monto} para insertar los datos del donante. Se envía al verificar una donación.</small></div></div>
+  <button class="btn" id="save">Guardar cambios</button>
+  <div class="card sec" style="margin-top:26px"><h3>Cambiar clave de acceso</h3><div class="f"><label for="nk">Nueva clave</label><input id="nk" type="password" autocomplete="new-password"><small>Mínimo 8 caracteres. Vas a seguir dentro del panel con la clave nueva.</small></div><button class="btn ghost" id="chk">Cambiar clave</button></div>`;
+  $('save').onclick = async () => {
+    const methods = {}; METHODS.forEach((x, i) => methods[x.name] = { on: $('on' + i).checked, addr: $('ad' + i).value.trim() });
+    const maxDonors = parseInt($('max').value, 10);
+    if (!maxDonors || maxDonors < 1) return toast('El cupo debe ser un número mayor a 0');
+    try { await post({ action: 'saveConfig', config: { maxDonors, methods, emailSubject: $('sub').value, emailBody: $('body').value } }); await refresh('Configuración guardada'); } catch (e) { toast(e.message); }
+  };
+  $('chk').onclick = async () => {
+    const nk = $('nk').value; if (nk.length < 8) return toast('La clave debe tener al menos 8 caracteres');
+    try { await post({ action: 'changeKey', newKey: nk }); key = nk; $('nk').value = ''; toast('Clave cambiada'); } catch (e) { toast(e.message); }
+  };
+}
 
-  function openDetail(id) {
-    const r = allRecords.find(x => String(x.id) === String(id));
-    if (!r) { console.warn('No se encontró el registro con id', id); return; }
-
-    const d = new Date(r.date);
-    const dateStr = isNaN(d) ? '' : d.toLocaleString('es-CO', { dateStyle: 'medium', timeStyle: 'short' });
-    const statusClass = r.status === 'Verificado' ? 'badge-verificado' : r.status === 'Rechazado' ? 'badge-rechazado' : 'badge-pendiente';
-
-    document.getElementById('detail-title').textContent = 'Detalle — ' + (r.name || 'Sin nombre');
-    document.getElementById('detail-id').textContent = r.id || '';
-    document.getElementById('detail-name').textContent = r.name || 'Sin nombre';
-    document.getElementById('detail-email').textContent = r.email || '—';
-    document.getElementById('detail-amount').textContent = '$' + (r.amount || 0);
-    document.getElementById('detail-method').textContent = r.method || '—';
-    document.getElementById('detail-status').innerHTML = `<span class="badge ${statusClass}">${r.status || 'Pendiente'}</span>`;
-    document.getElementById('detail-date').textContent = dateStr;
-
-    const receiptWrap = document.getElementById('detail-receipt-wrap');
-    const receiptImg = document.getElementById('detail-receipt-img');
-    if (r.receipt) {
-      receiptWrap.style.display = 'block';
-      receiptImg.src = r.receipt;
-    } else {
-      receiptWrap.style.display = 'none';
-    }
-
-    document.getElementById('detail-modal').style.display = 'flex';
-  }
-
-  function closeDetail() {
-    document.getElementById('detail-modal').style.display = 'none';
-  }
-
-  // Un solo listener en la tabla, en vez de onclick="" en cada botón:
-  // así funciona sin importar qué caracteres tenga el nombre/correo/id.
-  document.getElementById('admin-tbody').addEventListener('click', function (e) {
-    const btn = e.target.closest('.act-btn');
-    if (!btn) return;
-    const id = btn.dataset.id;
-    const action = btn.dataset.action;
-    if (action === 'ver') openDetail(id);
-    else if (action === 'verificar') setStatus(id, 'Verificado');
-    else if (action === 'rechazar') setStatus(id, 'Rechazado');
-    else if (action === 'borrar') deleteRow(id);
-  });
-
-  async function loadAdminData() {
-    const loading = document.getElementById('admin-loading');
-    const errorBox = document.getElementById('admin-error');
-    const empty = document.getElementById('admin-empty');
-    const table = document.getElementById('admin-table');
-
-    loading.style.display = 'block';
-    errorBox.style.display = 'none';
-    empty.style.display = 'none';
-    table.style.display = 'none';
-
-    try {
-      const res = await fetch(SHEET_API_URL + '?key=' + encodeURIComponent(adminKey));
-      const data = await res.json();
-      if (!data.success) throw new Error(data.error || 'Error al leer la hoja');
-
-      allRecords = data.records || [];
-      loading.style.display = 'none';
-      renderTable();
-    } catch (e) {
-      loading.style.display = 'none';
-      errorBox.style.display = 'block';
-      document.getElementById('admin-error-detail').textContent = 'Detalle técnico: ' + (e.message || e.toString());
-    }
-  }
-
-  function renderTable() {
-    const empty = document.getElementById('admin-empty');
-    const table = document.getElementById('admin-table');
-    const tbody = document.getElementById('admin-tbody');
-    const search = document.getElementById('search-input').value.trim().toLowerCase();
-    const statusFilter = document.getElementById('status-filter').value;
-
-    // Stats (sobre el total, no sobre el filtrado)
-    document.getElementById('stat-total').textContent = allRecords.length;
-    const totalAmount = allRecords.reduce((sum, r) => sum + (parseFloat(r.amount) || 0), 0);
-    document.getElementById('stat-amount').textContent = '$' + totalAmount.toLocaleString('es-CO');
-
-    let filtered = allRecords.filter(r => {
-      const matchesSearch = !search ||
-        (r.name || '').toLowerCase().includes(search) ||
-        (r.email || '').toLowerCase().includes(search);
-      const matchesStatus = !statusFilter || r.status === statusFilter;
-      return matchesSearch && matchesStatus;
-    });
-
-    filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-    if (filtered.length === 0) {
-      table.style.display = 'none';
-      empty.style.display = 'block';
-      return;
-    }
-
-    empty.style.display = 'none';
-    table.style.display = 'table';
-
-    tbody.innerHTML = filtered.map(r => {
-      const d = new Date(r.date);
-      const dateStr = isNaN(d) ? '' : d.toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' });
-      const statusClass = r.status === 'Verificado' ? 'badge-verificado' : r.status === 'Rechazado' ? 'badge-rechazado' : 'badge-pendiente';
-
-      return `
-        <tr>
-          <td style="color:#6b7280;">${escapeHtml(r.id || '')}</td>
-          <td class="cell-name">${escapeHtml(r.name || 'Sin nombre')}</td>
-          <td class="cell-email">${escapeHtml(r.email || '')}</td>
-          <td class="cell-amount">$${escapeHtml(String(r.amount || 0))}</td>
-          <td>${escapeHtml(r.method || '')}</td>
-          <td><span class="badge ${statusClass}">${escapeHtml(r.status || 'Pendiente')}</span></td>
-          <td style="color:#9ca3af;">${dateStr}</td>
-          <td>
-            <div class="actions-cell">
-              <button class="act-btn act-ver" data-action="ver" data-id="${escapeHtml(String(r.id || ''))}">Ver</button>
-              <button class="act-btn act-verificar" data-action="verificar" data-id="${escapeHtml(String(r.id || ''))}">Verificar</button>
-              <button class="act-btn act-rechazar" data-action="rechazar" data-id="${escapeHtml(String(r.id || ''))}">Rechazar</button>
-              <button class="act-btn act-borrar" data-action="borrar" data-id="${escapeHtml(String(r.id || ''))}">Borrar</button>
-            </div>
-          </td>
-        </tr>
-      `;
-    }).join('');
-  }
-
-  async function setStatus(id, status) {
-    try {
-      const res = await fetch(SHEET_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'updateStatus', id: id, status: status, key: adminKey }),
-      });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.error);
-      const rec = allRecords.find(r => String(r.id) === String(id));
-      if (rec) rec.status = status;
-      renderTable();
-    } catch (e) {
-      alert('No se pudo actualizar el estado: ' + e.message);
-    }
-  }
-
-  async function deleteRow(id) {
-    if (!confirm('¿Seguro que querés borrar este registro? Esta acción no se puede deshacer.')) return;
-    try {
-      const res = await fetch(SHEET_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'delete', id: id, key: adminKey }),
-      });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.error);
-      allRecords = allRecords.filter(r => String(r.id) !== String(id));
-      renderTable();
-    } catch (e) {
-      alert('No se pudo borrar: ' + e.message);
-    }
-  }
-
-  function exportCSV() {
-    if (allRecords.length === 0) return;
-    const headers = ['ID', 'Fecha', 'Nombre', 'Correo', 'Monto', 'Método', 'Estado'];
-    const rows = allRecords.map(r => [r.id, r.date, r.name, r.email, r.amount, r.method, r.status]);
-    const csv = [headers, ...rows].map(row => row.map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'donaciones.csv';
-    link.click();
-  }
-
-  function escapeHtml(str) {
-    const d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
-  }
+// ---------- Acciones (un solo listener) ----------
+function detail(r) {
+  $('modalBox').innerHTML = `<h2 style="font-size:1.2rem">${esc(r.name)}</h2><span class="badge ${esc(r.status)}">${esc(r.status)}</span>
+  <dl><dt>Correo</dt><dd>${esc(r.email)}</dd><dt>Monto</dt><dd><b>${money(amt(r))}</b></dd><dt>Método</dt><dd>${esc(r.method)}</dd><dt>Fecha</dt><dd>${fmtDate(r.date)}</dd><dt>ID</dt><dd>${esc(r.id)}</dd></dl>
+  ${r.receipt ? `<b>Comprobante</b><a href="${esc(r.receipt)}" target="_blank" rel="noopener"><img src="${esc(r.receipt)}" alt="Comprobante de pago"></a>` : '<p style="color:var(--mute)">Sin comprobante adjunto.</p>'}
+  <button class="btn ghost" style="margin-top:16px" id="x">Cerrar</button>`;
+  $('modal').style.display = 'flex'; $('x').onclick = () => $('modal').style.display = 'none';
+}
+$('modal').onclick = e => { if (e.target.id === 'modal') $('modal').style.display = 'none'; };
+document.addEventListener('keydown', e => { if (e.key === 'Escape') $('modal').style.display = 'none'; });
+$('main').addEventListener('click', async e => {
+  const b = e.target.closest('button[data-a]'); if (!b) return;
+  const id = b.dataset.id, a = b.dataset.a, r = recs.find(x => String(x.id) === id);
+  if (a === 'ver') return detail(r);
+  if (a === 'purge' && !confirm('¿Borrar para siempre? Esto no se puede deshacer.')) return;
+  const map = { ok: { action: 'updateStatus', status: 'Verificado' }, no: { action: 'updateStatus', status: 'Rechazado' }, trash: { action: 'trash' }, restore: { action: 'restore' }, purge: { action: 'delete' } };
+  const done = { ok: 'Donación verificada', no: 'Donación rechazada', trash: 'Movida a Eliminados', restore: 'Donación restaurada', purge: 'Borrada para siempre' };
+  b.disabled = true;
+  try { await post({ ...map[a], id }); await refresh(done[a]); } catch (er) { toast('No se pudo completar: ' + er.message); b.disabled = false; }
+});
 </script>
 </body>
 </html>

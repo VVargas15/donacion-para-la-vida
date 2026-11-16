@@ -525,7 +525,7 @@
       const res = await fetch(SHEET_API_URL + '?action=count');
       const data = await res.json();
       const count = data.count || 0;
-      if (count >= MAX_DONORS) {
+      if (count >= (data.max || MAX_DONORS)) {
         document.getElementById('form-wrap').style.display = 'none';
         document.getElementById('limit-reached-box').style.display = 'block';
       }
@@ -534,6 +534,26 @@
     }
   }
   checkDonationLimit();
+
+  // Aplica la configuración del panel admin (métodos activos y datos de pago)
+  (async function applyConfig() {
+    try {
+      const res = await fetch(SHEET_API_URL + '?action=config');
+      const m = ((await res.json()).config || {}).methods || {};
+      for (let i = cryptoWallets.length - 1; i >= 0; i--) {
+        const w = cryptoWallets[i], c = m[w.name];
+        if (!c) continue;
+        if (c.on === false) { cryptoWallets.splice(i, 1); continue; }
+        if (c.addr) {
+          w.addr = c.addr;
+          if (w.bank) w.lines = [
+            '<div style="font-size:20px;font-weight:800;color:#0f2d1a;text-align:center;word-break:break-all;margin-bottom:14px;">' + c.addr.replace(/[<>&"]/g, '') + '</div>',
+            w.lines[1]
+          ];
+        }
+      }
+    } catch (e) { /* si falla, quedan los valores por defecto */ }
+  })();
 
   function confirmCryptoDonation() {
     if (!receiptDataUrl) {
