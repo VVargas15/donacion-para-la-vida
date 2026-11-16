@@ -6,6 +6,7 @@
   <title>Cambia la vida de los niños</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
+    :root { --accent: #2d7a4a; --accent2: #4ac47a; }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
@@ -42,9 +43,9 @@
       background: linear-gradient(to top, rgba(10,40,20,0.92) 0%, rgba(10,40,20,0.4) 55%, transparent 100%);
     }
     .left-content { position: relative; z-index: 1; }
-    .left-stars { font-size: 1.4rem; margin-bottom: 1rem; color: #4ac47a; }
+    .left-stars { font-size: 1.4rem; margin-bottom: 1rem; color: var(--accent2); }
     .left-title { font-size: 2.6rem; font-weight: 800; line-height: 1.1; color: #fff; margin-bottom: 0.8rem; }
-    .left-title span { color: #4ac47a; }
+    .left-title span { color: var(--accent2); }
     .left-sub { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.6; }
 
     /* RIGHT */
@@ -56,7 +57,7 @@
     }
 
     .right-title { font-size: 1.6rem; font-weight: 800; color: #0f2d1a; margin-bottom: 6px; }
-    .right-title span { color: #2d7a4a; }
+    .right-title span { color: var(--accent); }
     .right-sub { font-size: 13px; color: #6b7280; line-height: 1.65; margin-bottom: 0.5rem; }
 
     .section-label { font-size: 13px; font-weight: 700; color: #111; margin-bottom: 10px; margin-top: 1.2rem; }
@@ -69,12 +70,12 @@
       font-size: 0.95rem; font-weight: 700; color: #374151;
       background: #fff; transition: all .15s; font-family: 'Inter', sans-serif;
     }
-    .amt:hover { border-color: #2d7a4a; color: #2d7a4a; background: #f0fdf4; }
-    .amt.active { border-color: #2d7a4a; background: #2d7a4a; color: #fff; }
+    .amt:hover { border-color: var(--accent); color: var(--accent); background: #f0fdf4; }
+    .amt.active { border-color: var(--accent); background: var(--accent); color: #fff; }
 
     /* Custom */
     .custom-link {
-      font-size: 13px; color: #2d7a4a; font-weight: 600;
+      font-size: 13px; color: var(--accent); font-weight: 600;
       text-decoration: underline; cursor: pointer;
       margin-top: 10px; display: inline-block;
     }
@@ -87,7 +88,7 @@
       color: #0f2d1a; background: #fafafa; outline: none;
       transition: border-color .15s;
     }
-    .custom-wrap input:focus { border-color: #2d7a4a; background: #fff; }
+    .custom-wrap input:focus { border-color: var(--accent); background: #fff; }
     .custom-wrap input::placeholder { color: #9ca3af; }
 
     /* Fields */
@@ -100,7 +101,7 @@
       color: #0f2d1a; background: #fafafa; outline: none;
       transition: border-color .15s;
     }
-    .field input:focus { border-color: #2d7a4a; background: #fff; }
+    .field input:focus { border-color: var(--accent); background: #fff; }
 
     /* Buttons */
     .btn-row { display: flex; gap: 10px; margin-top: 1.6rem; }
@@ -161,8 +162,8 @@
     <div class="left-bg"></div>
     <div class="left-content">
       <div class="left-stars">✦ ✦</div>
-      <h2 class="left-title">Cada<br><span>donación</span><br>cambia<br>una vida.</h2>
-      <p class="left-sub">Tu aporte llega directo a niños en comunidades vulnerables de América Latina.</p>
+      <h2 class="left-title" id="hero-title">Cada<br><span>donación</span><br>cambia<br>una vida.</h2>
+      <p class="left-sub" id="hero-sub">Tu aporte llega directo a niños en comunidades vulnerables de América Latina.</p>
     </div>
   </div>
 
@@ -172,6 +173,7 @@
       <h1 class="right-title">Hacer una <span>donación</span></h1>
       <p class="right-sub">Completa el formulario para que tu aporte llegue directamente a los niños que más lo necesitan.</p>
 
+      <div id="campaign-box" style="display:none;background:#f3f8f4;border:1.5px solid #dcebe1;border-radius:14px;padding:14px 16px;margin-bottom:18px;font-size:13.5px;line-height:1.6;color:#374151;white-space:pre-line"></div>
       <div class="section-label">¿Cuánto querés donar?</div>
       <div class="amounts" id="amts">
         <button class="amt active" data-val="20">$20</button>
@@ -224,8 +226,8 @@
 
     <!-- CRYPTO SCREEN -->
     <div id="crypto-screen" style="display:none;">
-      <button onclick="backToForm()" style="background:none;border:none;cursor:pointer;color:#2d7a4a;font-size:13px;font-weight:600;padding:0;margin-bottom:1.2rem;display:flex;align-items:center;gap:4px;">← Volver</button>
-      <h2 style="font-size:1.3rem;font-weight:800;color:#0f2d1a;margin-bottom:6px;">Método de <span style="color:#2d7a4a;">pago</span></h2>
+      <button onclick="backToForm()" style="background:none;border:none;cursor:pointer;color:var(--accent);font-size:13px;font-weight:600;padding:0;margin-bottom:1.2rem;display:flex;align-items:center;gap:4px;">← Volver</button>
+      <h2 style="font-size:1.3rem;font-weight:800;color:#0f2d1a;margin-bottom:6px;">Método de <span style="color:var(--accent);">pago</span></h2>
       <p style="font-size:13px;color:#6b7280;margin-bottom:1.2rem;">Donación de <strong id="crypto-amt" style="color:#0f2d1a;"></strong>. Elegí cómo pagar:</p>
 
       <!-- Coin selector -->
@@ -243,7 +245,7 @@
         </div>
         <div id="coin-addr-row" style="background:#f3f4f6;border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left;">
           <span id="coin-addr" style="font-size:11px;color:#374151;word-break:break-all;font-family:monospace;line-height:1.5;"></span>
-          <button id="copy-btn" onclick="copySelected()" style="flex-shrink:0;background:#2d7a4a;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;">Copiar</button>
+          <button id="copy-btn" onclick="copySelected()" style="flex-shrink:0;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;">Copiar</button>
         </div>
         <div id="coin-bank-row" style="display:none;text-align:left;background:#fff;border-radius:10px;padding:6px 14px;"></div>
       </div>
@@ -261,8 +263,8 @@
 
     <!-- RECEIPT UPLOAD SCREEN -->
     <div id="receipt-screen" style="display:none;">
-      <button onclick="backToPayment()" style="background:none;border:none;cursor:pointer;color:#2d7a4a;font-size:13px;font-weight:600;padding:0;margin-bottom:1.2rem;display:flex;align-items:center;gap:4px;">← Volver</button>
-      <h2 style="font-size:1.3rem;font-weight:800;color:#0f2d1a;margin-bottom:6px;">Sube tu <span style="color:#2d7a4a;">comprobante</span></h2>
+      <button onclick="backToPayment()" style="background:none;border:none;cursor:pointer;color:var(--accent);font-size:13px;font-weight:600;padding:0;margin-bottom:1.2rem;display:flex;align-items:center;gap:4px;">← Volver</button>
+      <h2 style="font-size:1.3rem;font-weight:800;color:#0f2d1a;margin-bottom:6px;">Sube tu <span style="color:var(--accent);">comprobante</span></h2>
       <p style="font-size:13px;color:#6b7280;margin-bottom:1.2rem;">Adjunta una foto o captura de pantalla de tu comprobante de pago.</p>
 
       <label for="receipt-file" id="receipt-drop" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:2px dashed #d1d5db;border-radius:14px;padding:28px 16px;cursor:pointer;background:#fafafa;text-align:center;">
@@ -342,7 +344,7 @@
   const cryptoWallets = [
     { name: 'PayPal', symbol: 'PayPal', icon: 'P', color: '#0070ba', bank: true, addr: 'fenixgestiondenominas@gmail.com', lines: [
       '<div style="font-size:20px;font-weight:800;color:#0f2d1a;text-align:center;word-break:break-all;margin-bottom:14px;">fenixgestiondenominas@gmail.com</div>',
-      '<div style="text-align:center;"><button id="bank-copy-btn" onclick="copyBankValue()" style="background:#2d7a4a;color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;">Copiar</button></div>',
+      '<div style="text-align:center;"><button id="bank-copy-btn" onclick="copyBankValue()" style="background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;">Copiar</button></div>',
     ] },
     { name: 'Binance Pay', symbol: 'Binance Pay', icon: 'B', color: '#f0b90b', addr: '1118270464', qrImage: 'qr-binance.jpeg' },
     { name: 'Bitcoin', symbol: 'BTC', icon: '₿', color: '#f7931a', addr: '16d2NhK9XCFoNDobVY2kPPAt92ee93axrP', qrImage: 'qr-btc.jpeg' },
@@ -435,7 +437,7 @@
         : `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(w.addr)}&bgcolor=fafafa&color=0f2d1a&margin=6`;
       document.getElementById('coin-addr').textContent = w.addr;
       document.getElementById('copy-btn').textContent = 'Copiar';
-      document.getElementById('copy-btn').style.background = '#2d7a4a';
+      document.getElementById('copy-btn').style.background = 'var(--accent)';
     }
   }
 
@@ -463,7 +465,7 @@
       if (!btn) return;
       btn.textContent = '✓ Copiado';
       btn.style.background = '#166534';
-      setTimeout(() => { btn.textContent = 'Copiar'; btn.style.background = '#2d7a4a'; }, 2000);
+      setTimeout(() => { btn.textContent = 'Copiar'; btn.style.background = 'var(--accent)'; }, 2000);
     });
   }
 
@@ -474,7 +476,7 @@
       const btn = document.getElementById('copy-btn');
       btn.textContent = '✓ Copiado';
       btn.style.background = '#166534';
-      setTimeout(() => { btn.textContent = 'Copiar'; btn.style.background = '#2d7a4a'; }, 2000);
+      setTimeout(() => { btn.textContent = 'Copiar'; btn.style.background = 'var(--accent)'; }, 2000);
     });
   }
 
@@ -535,11 +537,31 @@
   }
   checkDonationLimit();
 
+  function applyLook(c) {
+    const root = document.documentElement.style;
+    if (/^#[0-9a-f]{6}$/i.test(c.accent || '')) {
+      root.setProperty('--accent', c.accent);
+      const n = parseInt(c.accent.slice(1), 16), mix = v => Math.round(v + (255 - v) * 0.35);
+      root.setProperty('--accent2', 'rgb(' + [n >> 16, (n >> 8) & 255, n & 255].map(mix).join(',') + ')');
+    }
+    if (/^https:\/\//.test(c.heroImage || '')) document.querySelector('.left-bg').style.backgroundImage = "url('" + c.heroImage.replace(/['"()]/g, '') + "')";
+    const esc = t => String(t).replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]));
+    if (c.heroTitle) document.getElementById('hero-title').innerHTML = esc(c.heroTitle).replace(/\*(.+?)\*/g, '<span>$1</span>');
+    if (c.heroSub) document.getElementById('hero-sub').textContent = c.heroSub;
+    if (c.campBeneficiary || c.campTitle || c.campWho || c.campUse) {
+      const box = document.getElementById('campaign-box');
+      box.innerHTML = (c.campBeneficiary ? '<b style="color:var(--accent)">Apoyo a ' + esc(c.campBeneficiary) + '</b>\n' : '') + (c.campTitle ? 'Campaña: ' + esc(c.campTitle) + '\n' : '') + (c.campWho ? '\n' + esc(c.campWho) : '') + (c.campUse ? '\n\n' + esc(c.campUse) : '');
+      box.style.display = 'block';
+    }
+  }
+
   // Aplica la configuración del panel admin (métodos activos y datos de pago)
   (async function applyConfig() {
     try {
       const res = await fetch(SHEET_API_URL + '?action=config');
-      const m = ((await res.json()).config || {}).methods || {};
+      const cf = (await res.json()).config || {};
+      applyLook(cf);
+      const m = cf.methods || {};
       for (let i = cryptoWallets.length - 1; i >= 0; i--) {
         const w = cryptoWallets[i], c = m[w.name];
         if (!c) continue;
