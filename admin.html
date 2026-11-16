@@ -108,7 +108,10 @@ function toast(t) { const e = $('toast'); e.textContent = t; e.style.display = '
 
 async function post(body) {
   const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ ...body, key }) });
-  const d = await r.json(); if (!d.success) throw new Error(d.error || 'Error'); return d;
+  const d = await r.json(); if (!d.success) throw new Error(d.error || 'Error');
+  if (['trash', 'restore', 'saveConfig', 'changeKey'].includes(body.action) && d.action !== body.action)
+    throw new Error('El Apps Script no está actualizado. Pegá el código nuevo y creá una nueva versión en Implementar → Administrar implementaciones.');
+  return d;
 }
 async function load() {
   const [a, c] = await Promise.all([
