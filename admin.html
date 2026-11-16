@@ -30,7 +30,7 @@ aside .brand small{display:block;color:#8fb09b;font-weight:500;font-size:12px;ma
 .nav.on i{background:var(--okbg);color:var(--g)}
 aside .out{margin-top:6px}
 main{margin-left:250px;padding:36px 48px 70px}
-.head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:26px;padding-bottom:18px;border-bottom:1px solid var(--line)}h1{font-size:1.8rem;font-weight:800;letter-spacing:-.02em;margin-bottom:4px}.sub{color:var(--mute)}.date{color:var(--mute);font-size:13px;text-transform:capitalize}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:26px;padding-bottom:18px;border-bottom:1px solid var(--line)}h1{font-size:1.8rem;font-weight:800;letter-spacing:-.02em;margin-bottom:4px}.sub{color:var(--mute)}.date{color:var(--mute);font-size:13px;}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:22px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 1px 2px rgba(16,40,26,.04)}
 .grid .stat:nth-child(1){background:#e7f3eb}.grid .stat:nth-child(2){background:#fdf3d8}.grid .stat:nth-child(3){background:#12301f;color:#fff}.grid .stat:nth-child(3) span{color:#a9c7b5}.stat b{display:block;font-size:2rem;font-weight:800;letter-spacing:-.02em;margin-top:6px}.stat span{color:var(--mute);font-size:13px}
@@ -51,6 +51,7 @@ td{padding:15px 18px;border-bottom:1px solid var(--line);vertical-align:middle}t
 .sec{margin-bottom:22px}.sec h3{font-size:1.02rem;margin-bottom:12px}
 .sw{display:flex;align-items:center;gap:8px;width:120px;flex-shrink:0;font-weight:600}.sw input{width:auto}
 .who{display:flex;align-items:center;gap:12px}.av{width:38px;height:38px;border-radius:50%;background:#dcefe2;color:var(--g);display:grid;place-items:center;font-weight:800;flex-shrink:0}.chip{background:#eef1ea;border-radius:7px;padding:3px 9px;font-size:13px;font-weight:500}.pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.pill{background:#fff;border:1.5px solid var(--line);border-radius:30px;padding:8px 16px;font-weight:600;font-size:13.5px;color:var(--ink)}.pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}.me{display:flex;align-items:center;gap:10px;padding:12px 10px;margin-top:auto;border-top:1px solid rgba(255,255,255,.1)}.me .av{background:#2d7a4a;color:#fff;width:34px;height:34px}.me b{color:#fff;font-size:13.5px;display:block}.me small{font-size:12px;color:#8fb09b}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px;margin-bottom:14px}.card h3{font-size:1.02rem;margin-bottom:14px}.dn{display:flex;align-items:center;gap:22px;flex-wrap:wrap}.dn svg{width:170px;height:170px;flex-shrink:0}.lgs{flex:1;min-width:190px}.lg{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line)}.lg:last-child{border:0}.lg i{width:11px;height:11px;border-radius:50%;flex-shrink:0}.lg span{flex:1}.lg em{font-style:normal;color:var(--mute);width:38px;text-align:right}
 #modal{position:fixed;inset:0;background:rgba(10,25,15,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}
 #modal .box{background:#fff;border-radius:14px;padding:24px;max-width:460px;width:100%;max-height:90vh;overflow:auto}
 #modal dl{display:grid;grid-template-columns:90px 1fr;gap:8px 12px;margin:14px 0}#modal dt{color:var(--mute)}#modal dd{word-break:break-word}
@@ -101,7 +102,7 @@ const money = n => '$' + (Math.round(n * 100) / 100).toLocaleString('es-CO');
 const amt = r => parseFloat(r.amount) || 0;
 const live = () => recs.filter(r => r.status !== 'Eliminado');
 const fmtDate = d => { const x = new Date(d); return isNaN(x) ? '' : x.toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' }); };
-const head = (t, sub) => `<div class="head"><div><h1>${t}</h1><p class="sub">${sub}</p></div><span class="date">${new Date().toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' })}</span></div>`;
+const head = (t, sub) => `<div class="head"><div><h1>${t}</h1><p class="sub">${sub}</p></div><span class="date">${new Date().toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^./, c => c.toUpperCase())}</span></div>`;
 const who = r => `<div class="who"><span class="av">${esc((r.name || '?').trim().charAt(0).toUpperCase())}</span><div><b>${esc(r.name || 'Sin nombre')}</b><br><span style="color:var(--mute);font-size:13px">${esc(r.email)}</span></div></div>`;
 function toast(t) { const e = $('toast'); e.textContent = t; e.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(() => e.style.display = 'none', 2600); }
 
@@ -180,16 +181,31 @@ function csv() {
 }
 
 // ---------- Finanzas ----------
+const MCOL = { PayPal: '#0070ba', 'Binance Pay': '#f0b90b', Bitcoin: '#f7931a', Tether: '#26a17b' };
+function donut(items, label) {
+  const list = items.filter(i => i[1] > 0), tot = list.reduce((s, i) => s + i[1], 0);
+  if (!tot) return '<p class="empty">Sin datos todavía.</p>';
+  const R = 62, C = 2 * Math.PI * R; let off = 0;
+  const arcs = list.map(([n, v, c]) => { const len = v / tot * C; const a = `<circle cx="80" cy="80" r="${R}" fill="none" stroke="${c}" stroke-width="22" stroke-dasharray="${len} ${C - len}" stroke-dashoffset="${-off}" transform="rotate(-90 80 80)"/>`; off += len; return a; }).join('');
+  const lg = list.map(([n, v, c]) => `<div class="lg"><i style="background:${c}"></i><span>${esc(n)}</span><b>${money(v)}</b><em>${Math.round(v / tot * 100)}%</em></div>`).join('');
+  return `<div class="dn"><svg viewBox="0 0 160 160" role="img" aria-label="${esc(label)}">${arcs}<text x="80" y="76" text-anchor="middle" font-size="11" fill="#6b7568">Total</text><text x="80" y="95" text-anchor="middle" font-size="15" font-weight="800" fill="#10281a">${money(tot)}</text></svg><div class="lgs">${lg}</div></div>`;
+}
+function cols(list) {
+  if (!list.length) return '<p class="empty">Sin datos todavía.</p>';
+  const mx = Math.max(...list.map(x => x[1]), 1), W = 560, H = 200, pad = 24, step = (W - pad * 2) / list.length, bw = Math.min(56, step - 18);
+  return `<svg viewBox="0 0 ${W} ${H + 32}" style="width:100%;height:auto" role="img" aria-label="Donaciones por mes"><line x1="${pad}" x2="${W - pad}" y1="${H}" y2="${H}" stroke="#e4e7df"/>${list.map(([l, v], i) => { const h = v / mx * (H - 34), x = pad + step * i + (step - bw) / 2; return `<rect x="${x}" y="${H - h}" width="${bw}" height="${h}" rx="6" fill="#2d7a4a"/><text x="${x + bw / 2}" y="${H - h - 8}" text-anchor="middle" font-size="12" font-weight="700" fill="#10281a">${money(v)}</text><text x="${x + bw / 2}" y="${H + 20}" text-anchor="middle" font-size="12" fill="#6b7568">${esc(l)}</text>`; }).join('')}</svg>`;
+}
 function vFin() {
   const L = live(), sum = s => L.filter(r => r.status === s).reduce((t, r) => t + amt(r), 0);
-  const group = f => { const m = {}; L.filter(r => r.status !== 'Rechazado').forEach(r => { const k = f(r); m[k] = (m[k] || 0) + amt(r); }); return Object.entries(m); };
-  const bars = (list, mx) => list.length ? list.map(([k, v]) => `<div class="row"><span class="nm">${esc(k)}</span><div class="hbar"><div style="width:${mx ? v / mx * 100 : 0}%"></div></div><span class="amt">${money(v)}</span></div>`).join('') : '<p class="empty">Sin datos todavía.</p>';
-  const byM = group(r => r.method || 'Sin método').sort((a, b) => b[1] - a[1]);
-  const byMonth = group(r => { const d = new Date(r.date); return isNaN(d) ? 'Sin fecha' : d.toLocaleDateString('es-CO', { month: 'short', year: 'numeric' }); });
-  $('main').innerHTML = `${head('Finanzas','Los montos rechazados y eliminados no se cuentan.')}
+  const OK = L.filter(r => r.status !== 'Rechazado');
+  const byM = {}; OK.forEach(r => { const k = r.method || 'Sin método'; byM[k] = (byM[k] || 0) + amt(r); });
+  const byMonth = {}; OK.forEach(r => { const d = new Date(r.date); if (isNaN(d)) return; const k = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); byMonth[k] = (byMonth[k] || 0) + amt(r); });
+  const months = Object.keys(byMonth).sort().slice(-6).map(k => { const [y, m] = k.split('-'); return [new Date(y, m - 1, 1).toLocaleDateString('es-CO', { month: 'short', year: '2-digit' }), byMonth[k]]; });
+  $('main').innerHTML = `${head('Finanzas', 'Cómo se reparte el dinero. Por método y por mes no se cuentan las rechazadas.')}
   <div class="grid"><div class="card stat"><span>Verificado</span><b>${money(sum('Verificado'))}</b></div><div class="card stat"><span>Pendiente de revisar</span><b>${money(sum('Pendiente'))}</b></div><div class="card stat"><span>Rechazado</span><b>${money(sum('Rechazado'))}</b></div></div>
-  <div class="card sec"><h3>Por método de pago</h3>${bars(byM, Math.max(0, ...byM.map(x => x[1])))}</div>
-  <div class="card sec"><h3>Por mes</h3>${bars(byMonth, Math.max(0, ...byMonth.map(x => x[1])))}</div>`;
+  <div class="two"><div class="card"><h3>Por estado</h3>${donut([['Verificado', sum('Verificado'), '#2d7a4a'], ['Pendiente', sum('Pendiente'), '#e0a21b'], ['Rechazado', sum('Rechazado'), '#c93c3c']], 'Montos por estado')}</div>
+  <div class="card"><h3>Por método de pago</h3>${donut(Object.entries(byM).map(([k, v]) => [k, v, MCOL[k] || '#8a948b']), 'Montos por método')}</div></div>
+  <div class="card"><h3>Donaciones por mes</h3>${cols(months)}</div>`;
 }
 
 // ---------- Eliminados ----------
