@@ -8,7 +8,7 @@
 <style>
 :root{--ink:#10281a;--side:#12301f;--paper:#f5f6f2;--card:#fff;--line:#e4e7df;--mute:#6b7568;--g:#2d7a4a;--amber:#b45309;--amberbg:#fef3c7;--red:#b91c1c;--redbg:#fee2e2;--okbg:#dcfce7}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--paper);color:var(--ink);font-size:14px}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--paper);color:var(--ink);font-size:15px}
 button{font-family:inherit;cursor:pointer}
 button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--g);outline-offset:2px}
 #login{max-width:340px;margin:18vh auto 0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px}
@@ -20,26 +20,26 @@ textarea{min-height:150px;resize:vertical;line-height:1.5}
 .btn.red{background:var(--red)}.btn.sm{padding:6px 11px;font-size:12.5px;border-radius:7px}
 .err{color:var(--red);margin-top:10px;display:none}
 #app{display:none;min-height:100vh}
-aside{position:fixed;inset:0 auto 0 0;width:220px;background:var(--side);color:#cfe0d4;padding:22px 14px;display:flex;flex-direction:column;gap:4px}
+aside{position:fixed;inset:0 auto 0 0;width:250px;background:var(--side);color:#cfe0d4;padding:22px 14px;display:flex;flex-direction:column;gap:4px}
 aside .brand{color:#fff;font-weight:800;font-size:1.02rem;padding:0 10px 18px;line-height:1.25}
 aside .brand small{display:block;color:#8fb09b;font-weight:500;font-size:12px;margin-top:3px}
-.nav{display:flex;justify-content:space-between;align-items:center;background:none;border:0;color:inherit;text-align:left;padding:10px;border-radius:9px;font-size:14px;font-weight:500}
+.nav{display:flex;align-items:center;gap:12px;background:none;border:0;color:inherit;text-align:left;padding:10px;border-radius:9px;font-size:14px;font-weight:500}
 .nav:hover{background:rgba(255,255,255,.07)}
 .nav.on{background:#fff;color:var(--ink);font-weight:700}
-.nav i{font-style:normal;font-size:11.5px;background:rgba(255,255,255,.16);border-radius:20px;padding:1px 8px}
+.nav svg{width:19px;height:19px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.nav i{margin-left:auto;font-style:normal;font-size:11.5px;background:rgba(255,255,255,.16);border-radius:20px;padding:1px 8px}
 .nav.on i{background:var(--okbg);color:var(--g)}
-aside .out{margin-top:auto}
-main{margin-left:220px;padding:30px 34px;max-width:1100px}
-h1{font-size:1.5rem;font-weight:800;margin-bottom:4px}.sub{color:var(--mute);margin-bottom:22px}
+aside .out{margin-top:6px}
+main{margin-left:250px;padding:36px 48px 70px}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:26px;padding-bottom:18px;border-bottom:1px solid var(--line)}h1{font-size:1.8rem;font-weight:800;letter-spacing:-.02em;margin-bottom:4px}.sub{color:var(--mute)}.date{color:var(--mute);font-size:13px;text-transform:capitalize}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:22px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
-.stat b{display:block;font-size:1.7rem;font-weight:800;margin-top:4px}.stat span{color:var(--mute);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 1px 2px rgba(16,40,26,.04)}
+.grid .stat:nth-child(1){background:#e7f3eb}.grid .stat:nth-child(2){background:#fdf3d8}.grid .stat:nth-child(3){background:#12301f;color:#fff}.grid .stat:nth-child(3) span{color:#a9c7b5}.stat b{display:block;font-size:2rem;font-weight:800;letter-spacing:-.02em;margin-top:6px}.stat span{color:var(--mute);font-size:13px}
 .bar{height:8px;background:var(--line);border-radius:8px;overflow:hidden;margin-top:10px}.bar div{height:100%;background:var(--g)}
 .tools{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}.tools input{flex:1;min-width:180px}.tools select{width:auto}
-.wrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:12px}
-table{width:100%;border-collapse:collapse;min-width:720px}
-th{text-align:left;font-size:12.5px;color:var(--mute);font-weight:600;padding:11px 14px;border-bottom:1px solid var(--line)}
-td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}tr:last-child td{border:0}
+.wrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 1px 2px rgba(16,40,26,.04)}
+table{width:100%;border-collapse:collapse;min-width:720px}tbody tr:hover{background:#fafbf8}
+th{text-align:left;font-size:13px;color:var(--mute);font-weight:600;padding:13px 18px;background:#fafbf8;border-bottom:1px solid var(--line)}
+td{padding:15px 18px;border-bottom:1px solid var(--line);vertical-align:middle}tr:last-child td{border:0}
 .badge{padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;background:var(--amberbg);color:var(--amber)}
 .badge.Verificado{background:var(--okbg);color:var(--g)}.badge.Rechazado,.badge.Eliminado{background:var(--redbg);color:var(--red)}
 .acts{display:flex;gap:6px;flex-wrap:wrap}
@@ -50,6 +50,7 @@ td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}t
 .f{margin-bottom:14px}.f label{display:block;font-weight:600;margin-bottom:6px}.f small{color:var(--mute);display:block;margin-top:4px}
 .sec{margin-bottom:22px}.sec h3{font-size:1.02rem;margin-bottom:12px}
 .sw{display:flex;align-items:center;gap:8px;width:120px;flex-shrink:0;font-weight:600}.sw input{width:auto}
+.who{display:flex;align-items:center;gap:12px}.av{width:38px;height:38px;border-radius:50%;background:#dcefe2;color:var(--g);display:grid;place-items:center;font-weight:800;flex-shrink:0}.chip{background:#eef1ea;border-radius:7px;padding:3px 9px;font-size:13px;font-weight:500}.pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.pill{background:#fff;border:1.5px solid var(--line);border-radius:30px;padding:8px 16px;font-weight:600;font-size:13.5px;color:var(--ink)}.pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}.me{display:flex;align-items:center;gap:10px;padding:12px 10px;margin-top:auto;border-top:1px solid rgba(255,255,255,.1)}.me .av{background:#2d7a4a;color:#fff;width:34px;height:34px}.me b{color:#fff;font-size:13.5px;display:block}.me small{font-size:12px;color:#8fb09b}
 #modal{position:fixed;inset:0;background:rgba(10,25,15,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}
 #modal .box{background:#fff;border-radius:14px;padding:24px;max-width:460px;width:100%;max-height:90vh;overflow:auto}
 #modal dl{display:grid;grid-template-columns:90px 1fr;gap:8px 12px;margin:14px 0}#modal dt{color:var(--mute)}#modal dd{word-break:break-word}
@@ -71,12 +72,13 @@ td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}t
 <div id="app">
   <aside>
     <div class="brand">Donación Para La Vida<small>Panel de administración</small></div>
-    <button class="nav" data-v="inicio">Inicio</button>
-    <button class="nav" data-v="donaciones">Donaciones <i id="n-don">0</i></button>
-    <button class="nav" data-v="finanzas">Finanzas</button>
-    <button class="nav" data-v="eliminados">Eliminados <i id="n-del">0</i></button>
-    <button class="nav" data-v="config">Configuración</button>
-    <button class="nav out" id="logout">Salir</button>
+    <button class="nav" data-v="inicio"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Inicio</button>
+    <button class="nav" data-v="donaciones"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.4-9.3-9A5.4 5.4 0 0 1 12 6a5.4 5.4 0 0 1 9.3 6c-2.3 4.6-9.3 9-9.3 9z"/></svg>Donaciones <i id="n-don">0</i></button>
+    <button class="nav" data-v="finanzas"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Finanzas</button>
+    <button class="nav" data-v="eliminados"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>Eliminados <i id="n-del">0</i></button>
+    <button class="nav" data-v="config"><svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0M16 4v4M10 10v4M18 16v4"/></svg>Configuración</button>
+    <div class="me"><span class="av">A</span><div><b>Administrador</b><small>Sesión activa</small></div></div>
+    <button class="nav out" id="logout"><svg viewBox="0 0 24 24"><path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/></svg>Cerrar sesión</button>
   </aside>
   <main id="main"></main>
 </div>
@@ -99,6 +101,8 @@ const money = n => '$' + (Math.round(n * 100) / 100).toLocaleString('es-CO');
 const amt = r => parseFloat(r.amount) || 0;
 const live = () => recs.filter(r => r.status !== 'Eliminado');
 const fmtDate = d => { const x = new Date(d); return isNaN(x) ? '' : x.toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' }); };
+const head = (t, sub) => `<div class="head"><div>${head('${t}','${sub}')}</div><span class="date">${new Date().toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' })}</span></div>`;
+const who = r => `<div class="who"><span class="av">${esc((r.name || '?').trim().charAt(0).toUpperCase())}</span><div><b>${esc(r.name || 'Sin nombre')}</b><br><span style="color:var(--mute);font-size:13px">${esc(r.email)}</span></div></div>`;
 function toast(t) { const e = $('toast'); e.textContent = t; e.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(() => e.style.display = 'none', 2600); }
 
 async function post(body) {
@@ -138,7 +142,7 @@ function vInicio() {
   const L = live(), max = cfg.maxDonors || 1000, pct = Math.min(100, L.length / max * 100);
   const by = s => L.filter(r => r.status === s);
   const last = [...L].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
-  $('main').innerHTML = `<h1>Inicio</h1><p class="sub">Así va la campaña hoy.</p>
+  $('main').innerHTML = `${head('Inicio','Así va la campaña hoy.')}
   <div class="grid">
     <div class="card stat"><span>Donaciones registradas</span><b>${L.length}</b></div>
     <div class="card stat"><span>Por revisar</span><b>${by('Pendiente').length}</b></div>
@@ -146,17 +150,18 @@ function vInicio() {
     <div class="card stat"><span>Cupo usado</span><b>${L.length} de ${max}</b><div class="bar"><div style="width:${pct}%"></div></div></div>
   </div>
   <h3 style="margin-bottom:10px">Últimas donaciones</h3>
-  <div class="wrap">${last.length ? `<table><tbody>${last.map(r => `<tr><td><b>${esc(r.name)}</b><br><span style="color:var(--mute)">${esc(r.email)}</span></td><td>${money(amt(r))}</td><td>${esc(r.method)}</td><td><span class="badge ${esc(r.status)}">${esc(r.status)}</span></td><td style="color:var(--mute)">${fmtDate(r.date)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">Todavía no hay donaciones.</div>'}</div>`;
+  <div class="wrap">${last.length ? `<table><tbody>${last.map(r => `<tr><td>${who(r)}</td><td>${money(amt(r))}</td><td><span class="chip">${esc(r.method)}</span></td><td><span class="badge ${esc(r.status)}">${esc(r.status)}</span></td><td style="color:var(--mute)">${fmtDate(r.date)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">Todavía no hay donaciones.</div>'}</div>`;
 }
 
 // ---------- Donaciones ----------
 function vDon() {
-  $('main').innerHTML = `<h1>Donaciones</h1><p class="sub">Revisá cada comprobante y confirmá el pago.</p>
+  $('main').innerHTML = `${head('Donaciones','Revisá cada comprobante y confirmá el pago.')}
+  <div class="pills">${[["", "Todas"], ["Pendiente", "Pendientes"], ["Verificado", "Verificadas"], ["Rechazado", "Rechazadas"]].map(([v, l]) => `<button class="pill ${st === v ? 'on' : ''}" data-a="flt" data-id="${v}">${l} <span style="opacity:.6">${v ? live().filter(r => r.status === v).length : live().length}</span></button>`).join('')}</div>
   <div class="tools"><input id="q" placeholder="Buscar por nombre o correo" value="${esc(q)}">
-  <select id="st"><option value="">Todos los estados</option>${['Pendiente', 'Verificado', 'Rechazado'].map(s => `<option ${st === s ? 'selected' : ''}>${s}</option>`).join('')}</select>
+  
   <button class="btn ghost" id="rf">Actualizar</button><button class="btn ghost" id="csv">Descargar CSV</button></div>
   <div class="wrap" id="tb"></div>`;
-  $('q').oninput = e => { q = e.target.value; table(); }; $('st').onchange = e => { st = e.target.value; table(); };
+  $('q').oninput = e => { q = e.target.value; table(); };
   $('rf').onclick = () => refresh('Datos actualizados'); $('csv').onclick = csv; table();
 }
 function table() {
@@ -164,7 +169,7 @@ function table() {
   const L = live().filter(r => (!s || (r.name + ' ' + r.email).toLowerCase().includes(s)) && (!st || r.status === st)).sort((a, b) => new Date(b.date) - new Date(a.date));
   $('tb').innerHTML = !L.length ? '<div class="empty">No hay donaciones con ese filtro.</div>' :
     `<table><thead><tr><th>Donante</th><th>Monto</th><th>Método</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody>${L.map(r => `<tr>
-    <td><b>${esc(r.name || 'Sin nombre')}</b><br><span style="color:var(--mute)">${esc(r.email)}</span></td><td><b>${money(amt(r))}</b></td><td>${esc(r.method)}</td>
+    <td>${who(r)}</td><td><b>${money(amt(r))}</b></td><td><span class="chip">${esc(r.method)}</span></td>
     <td><span class="badge ${esc(r.status)}">${esc(r.status)}</span></td><td style="color:var(--mute)">${fmtDate(r.date)}</td>
     <td><div class="acts"><button class="btn ghost sm" data-a="ver" data-id="${esc(r.id)}">Ver</button><button class="btn sm" data-a="ok" data-id="${esc(r.id)}">Verificar</button><button class="btn ghost sm" data-a="no" data-id="${esc(r.id)}">Rechazar</button><button class="btn ghost sm" data-a="trash" data-id="${esc(r.id)}">Eliminar</button></div></td></tr>`).join('')}</tbody></table>`;
 }
@@ -181,7 +186,7 @@ function vFin() {
   const bars = (list, mx) => list.length ? list.map(([k, v]) => `<div class="row"><span class="nm">${esc(k)}</span><div class="hbar"><div style="width:${mx ? v / mx * 100 : 0}%"></div></div><span class="amt">${money(v)}</span></div>`).join('') : '<p class="empty">Sin datos todavía.</p>';
   const byM = group(r => r.method || 'Sin método').sort((a, b) => b[1] - a[1]);
   const byMonth = group(r => { const d = new Date(r.date); return isNaN(d) ? 'Sin fecha' : d.toLocaleDateString('es-CO', { month: 'short', year: 'numeric' }); });
-  $('main').innerHTML = `<h1>Finanzas</h1><p class="sub">Los montos rechazados y eliminados no se cuentan.</p>
+  $('main').innerHTML = `${head('Finanzas','Los montos rechazados y eliminados no se cuentan.')}
   <div class="grid"><div class="card stat"><span>Verificado</span><b>${money(sum('Verificado'))}</b></div><div class="card stat"><span>Pendiente de revisar</span><b>${money(sum('Pendiente'))}</b></div><div class="card stat"><span>Rechazado</span><b>${money(sum('Rechazado'))}</b></div></div>
   <div class="card sec"><h3>Por método de pago</h3>${bars(byM, Math.max(0, ...byM.map(x => x[1])))}</div>
   <div class="card sec"><h3>Por mes</h3>${bars(byMonth, Math.max(0, ...byMonth.map(x => x[1])))}</div>`;
@@ -190,15 +195,15 @@ function vFin() {
 // ---------- Eliminados ----------
 function vDel() {
   const D = recs.filter(r => r.status === 'Eliminado');
-  $('main').innerHTML = `<h1>Eliminados</h1><p class="sub">Podés restaurar una donación o borrarla para siempre.</p><div class="wrap">${!D.length ? '<div class="empty">No hay donaciones eliminadas.</div>' :
-    `<table><tbody>${D.map(r => `<tr><td><b>${esc(r.name)}</b><br><span style="color:var(--mute)">${esc(r.email)}</span></td><td>${money(amt(r))}</td><td>${esc(r.method)}</td><td style="color:var(--mute)">${fmtDate(r.date)}</td>
+  $('main').innerHTML = `${head('Eliminados','Podés restaurar una donación o borrarla para siempre.')}<div class="wrap">${!D.length ? '<div class="empty">No hay donaciones eliminadas.</div>' :
+    `<table><tbody>${D.map(r => `<tr><td>${who(r)}</td><td>${money(amt(r))}</td><td><span class="chip">${esc(r.method)}</span></td><td style="color:var(--mute)">${fmtDate(r.date)}</td>
     <td><div class="acts"><button class="btn sm" data-a="restore" data-id="${esc(r.id)}">Restaurar</button><button class="btn red sm" data-a="purge" data-id="${esc(r.id)}">Borrar para siempre</button></div></td></tr>`).join('')}</tbody></table>`}</div>`;
 }
 
 // ---------- Configuración ----------
 function vCfg() {
   const m = cfg.methods || {};
-  $('main').innerHTML = `<h1>Configuración</h1><p class="sub">Los cambios se aplican en la página de donaciones al guardar.</p>
+  $('main').innerHTML = `${head('Configuración','Los cambios se aplican en la página de donaciones al guardar.')}
   <div class="card sec"><h3>Cupo de donantes</h3><div class="f"><label for="max">Máximo de donaciones</label><input id="max" type="number" min="1" value="${esc(cfg.maxDonors || 1000)}"><small>Al llegar a este número, el formulario se reemplaza por el mensaje de cierre.</small></div></div>
   <div class="card sec"><h3>Métodos de pago</h3>${METHODS.map((x, i) => { const c = m[x.name] || {}; return `<div class="row"><label class="sw"><input type="checkbox" id="on${i}" ${c.on === false ? '' : 'checked'}>${x.name}</label><input class="val" id="ad${i}" aria-label="${esc(x.label)}" placeholder="${esc(x.label)}" value="${esc(c.addr || x.addr)}"></div>`; }).join('')}<small style="color:var(--mute)">Desmarcá un método para ocultarlo a los donantes. Los códigos QR no cambian desde acá.</small></div>
   <div class="card sec"><h3>Correo de confirmación</h3><div class="f"><label for="sub">Asunto</label><input id="sub" value="${esc(cfg.emailSubject)}"></div><div class="f"><label for="body">Mensaje</label><textarea id="body">${esc(cfg.emailBody)}</textarea><small>Usá {nombre} y {monto} para insertar los datos del donante. Se envía al verificar una donación.</small></div></div>
@@ -229,6 +234,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') $('modal').s
 $('main').addEventListener('click', async e => {
   const b = e.target.closest('button[data-a]'); if (!b) return;
   const id = b.dataset.id, a = b.dataset.a, r = recs.find(x => String(x.id) === id);
+  if (a === 'flt') { st = id; return vDon(); }
   if (a === 'ver') return detail(r);
   if (a === 'purge' && !confirm('¿Borrar para siempre? Esto no se puede deshacer.')) return;
   const map = { ok: { action: 'updateStatus', status: 'Verificado' }, no: { action: 'updateStatus', status: 'Rechazado' }, trash: { action: 'trash' }, restore: { action: 'restore' }, purge: { action: 'delete' } };
