@@ -101,7 +101,7 @@ const money = n => '$' + (Math.round(n * 100) / 100).toLocaleString('es-CO');
 const amt = r => parseFloat(r.amount) || 0;
 const live = () => recs.filter(r => r.status !== 'Eliminado');
 const fmtDate = d => { const x = new Date(d); return isNaN(x) ? '' : x.toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' }); };
-const head = (t, sub) => `<div class="head"><div>${head('${t}','${sub}')}</div><span class="date">${new Date().toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' })}</span></div>`;
+const head = (t, sub) => `<div class="head"><div><h1>${t}</h1><p class="sub">${sub}</p></div><span class="date">${new Date().toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' })}</span></div>`;
 const who = r => `<div class="who"><span class="av">${esc((r.name || '?').trim().charAt(0).toUpperCase())}</span><div><b>${esc(r.name || 'Sin nombre')}</b><br><span style="color:var(--mute);font-size:13px">${esc(r.email)}</span></div></div>`;
 function toast(t) { const e = $('toast'); e.textContent = t; e.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(() => e.style.display = 'none', 2600); }
 
