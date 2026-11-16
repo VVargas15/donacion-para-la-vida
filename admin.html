@@ -91,9 +91,9 @@ td{padding:15px 18px;border-bottom:1px solid var(--line);vertical-align:middle}t
 const API = 'https://script.google.com/macros/s/AKfycbz4hD-OTEVApIIFDPfj2OeKd9Ov62XDVFRW6xTs0DcTSIVRbZI2mXDYjyST_bXOiS4V/exec';
 const METHODS = [
   { name: 'PayPal', label: 'Correo', addr: 'fenixgestiondenominas@gmail.com' },
-  { name: 'Binance Pay', label: 'ID de Binance', addr: '1118270464' },
-  { name: 'Bitcoin', label: 'Dirección BTC', addr: '16d2NhK9XCFoNDobVY2kPPAt92ee93axrP' },
-  { name: 'Tether', label: 'Dirección USDT (TRC20)', addr: 'TM7C1tpPaUEMVpEALmrgRMZ6GDsTSdMK7B' },
+  { name: 'Binance Pay', label: 'ID de Binance', addr: '1118270464', qr: true },
+  { name: 'Bitcoin', label: 'Dirección BTC', addr: '16d2NhK9XCFoNDobVY2kPPAt92ee93axrP', qr: true },
+  { name: 'Tether', label: 'Dirección USDT (TRC20)', addr: 'TM7C1tpPaUEMVpEALmrgRMZ6GDsTSdMK7B', qr: true },
 ];
 let key = '', recs = [], cfg = {}, view = 'inicio', q = '', st = '';
 const $ = id => document.getElementById(id);
@@ -104,7 +104,7 @@ const live = () => recs.filter(r => r.status !== 'Eliminado');
 const fmtDate = d => { const x = new Date(d); return isNaN(x) ? '' : x.toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' }); };
 const head = (t, sub) => `<div class="head"><div><h1>${t}</h1><p class="sub">${sub}</p></div><span class="date">${new Date().toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^./, c => c.toUpperCase())}</span></div>`;
 const who = r => `<div class="who"><span class="av">${esc((r.name || '?').trim().charAt(0).toUpperCase())}</span><div><b>${esc(r.name || 'Sin nombre')}</b><br><span style="color:var(--mute);font-size:13px">${esc(r.email)}</span></div></div>`;
-function toast(t) { const e = $('toast'); e.textContent = t; e.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(() => e.style.display = 'none', 2600); }
+function toast(t, ms) { const e = $('toast'); e.textContent = t; e.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(() => e.style.display = 'none', ms || 2600); }
 
 async function post(body) {
   const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ ...body, key }) });
@@ -225,6 +225,10 @@ const TABS = [['apariencia', 'Apariencia'], ['textos', 'Textos de la página'], 
 const SW = ['#2d7a4a', '#1d6fb8', '#7c3aed', '#be185d', '#c2410c', '#0f766e'];
 let draft = null, ctab = 'apariencia';
 const fld = (k, label, ph, rows, hint) => `<div class="f"><label for="d-${k}">${label}</label>${rows ? `<textarea id="d-${k}" data-k="${k}" placeholder="${esc(ph)}" style="min-height:${rows}px">${esc(draft[k])}</textarea>` : `<input id="d-${k}" data-k="${k}" placeholder="${esc(ph)}" value="${esc(draft[k])}">`}${hint ? `<small>${hint}</small>` : ''}</div>`;
+const qrBox = (x, c) => !x.qr ? '' : `<div class="row" style="margin:-4px 0 14px 0;align-items:center;gap:12px">
+  ${c.qr ? `<img src="${esc(c.qr)}" alt="QR de ${esc(x.name)}" style="width:72px;height:72px;object-fit:contain;border-radius:10px;border:1px solid var(--line);background:#fff">` : '<div style="width:72px;height:72px;border:1.5px dashed var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;color:var(--mute);padding:4px">QR original</div>'}
+  <label class="btn ghost" style="cursor:pointer">${c.qr ? 'Cambiar QR' : 'Subir QR'}<input type="file" accept="image/*" hidden data-qrfile="${esc(x.name)}"></label>
+  ${c.qr ? `<button class="btn ghost" data-a="noqr" data-id="${esc(x.name)}">Usar QR original</button>` : ''}</div>`;
 function vCfg() {
   if (!draft) draft = { ...DEF, ...cfg, methods: JSON.parse(JSON.stringify(cfg.methods || {})) };
   const P = {
@@ -235,7 +239,7 @@ function vCfg() {
     textos: `<div class="sec"><h3>Portada</h3>${fld('heroTitle', 'Título grande', 'Cada *donación* cambia una vida.', 0, 'Poné la palabra resaltada entre asteriscos: *donación*')}${fld('heroSub', 'Frase debajo del título', '', 3)}</div>
       <div class="sec"><h3>Campaña (se muestra arriba del formulario)</h3>${fld('campBeneficiary', 'Apoyo a', '[Beneficiario]')}${fld('campTitle', 'Campaña', '[Título de la campaña]')}${fld('campWho', 'Quién necesita ayuda', '[Describe aquí quién necesita ayuda, la situación y por qué es importante.]', 90)}${fld('campUse', 'En qué se usará el dinero', '[Explica en qué se usará el dinero y adjunta soportes verificables.]', 90, 'Si dejás todo vacío, este recuadro no se muestra.')}</div>`,
     cupo: `<div class="sec"><h3>Cupo de donantes</h3><div class="f"><label for="d-maxDonors">Máximo de donaciones</label><input id="d-maxDonors" data-k="maxDonors" type="number" min="1" value="${esc(draft.maxDonors)}"><small>Al llegar a este número, el formulario se reemplaza por el mensaje de cierre. Escribilo sin puntos: 100000.</small></div></div>`,
-    metodos: `<div class="sec"><h3>Métodos de pago</h3>${METHODS.map(x => { const c = draft.methods[x.name] || {}; return `<div class="row"><label class="sw"><input type="checkbox" data-m="${esc(x.name)}" data-f="on" ${c.on === false ? '' : 'checked'}>${x.name}</label><input class="val" data-m="${esc(x.name)}" data-f="addr" aria-label="${esc(x.label)}" placeholder="${esc(x.label)}" value="${esc(c.addr || x.addr)}"></div>`; }).join('')}<small style="color:var(--mute)">Desmarcá un método para ocultarlo a los donantes. Los códigos QR no cambian desde acá.</small></div>`,
+    metodos: `<div class="sec"><h3>Métodos de pago</h3>${METHODS.map(x => { const c = draft.methods[x.name] || {}; return `<div class="row"><label class="sw"><input type="checkbox" data-m="${esc(x.name)}" data-f="on" ${c.on === false ? '' : 'checked'}>${x.name}</label><input class="val" data-m="${esc(x.name)}" data-f="addr" aria-label="${esc(x.label)}" placeholder="${esc(x.label)}" value="${esc(c.addr || x.addr)}"></div>${qrBox(x, c)}`; }).join('')}<small style="color:var(--mute)">Desmarcá un método para ocultarlo a los donantes. Si cambiás la dirección y no subís un QR nuevo, la página genera el QR sola con la dirección nueva.</small></div>`,
     correo: `<div class="sec"><h3>Correo de confirmación</h3>${fld('emailSubject', 'Asunto', '')}${fld('emailBody', 'Mensaje', '', 170, 'Usá {nombre} y {monto} para insertar los datos del donante. Se envía al verificar una donación.')}</div>`,
     clave: `<div class="sec"><h3>Cambiar clave de acceso</h3><div class="f"><label for="nk">Nueva clave</label><input id="nk" type="password" autocomplete="new-password"><small>Mínimo 8 caracteres. Vas a seguir dentro del panel con la clave nueva.</small></div><button class="btn" data-a="chk">Cambiar clave</button></div>`,
   };
@@ -253,15 +257,25 @@ async function changeKey() {
   const nk = $('nk').value; if (nk.length < 8) return toast('La clave debe tener al menos 8 caracteres');
   try { await post({ action: 'changeKey', newKey: nk }); key = nk; $('nk').value = ''; toast('Clave cambiada'); } catch (e) { toast(e.message); }
 }
-function shrink(file) { return new Promise((ok, no) => { const im = new Image(); im.onload = () => { const k = Math.min(1, 1400 / im.width), c = document.createElement('canvas'); c.width = im.width * k; c.height = im.height * k; c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); ok(c.toDataURL('image/jpeg', .82)); }; im.onerror = () => no(new Error('No se pudo leer la imagen')); im.src = URL.createObjectURL(file); }); }
+function shrink(file, max = 1400, qual = .82) { return new Promise((ok, no) => { const im = new Image(); im.onload = () => { const k = Math.min(1, max / Math.max(im.width, im.height)), c = document.createElement('canvas'); c.width = im.width * k; c.height = im.height * k; c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); ok(c.toDataURL('image/jpeg', qual)); }; im.onerror = () => no(new Error('No se pudo leer la imagen')); im.src = URL.createObjectURL(file); }); }
 $('main').addEventListener('input', e => {
   const t = e.target; if (!draft) return;
   if (t.dataset.k) { draft[t.dataset.k] = t.value; if (t.dataset.k === 'accent' && $('prev')) $('prev').style.background = t.value; }
   else if (t.dataset.m) { const m = draft.methods[t.dataset.m] = draft.methods[t.dataset.m] || {}; if (t.dataset.f === 'on') m.on = t.checked; else m.addr = t.value; }
 });
 $('main').addEventListener('change', async e => {
-  if (e.target.id !== 'photo' || !e.target.files[0]) return;
-  try { toast('Subiendo foto...'); const d = await post({ action: 'uploadImage', image: await shrink(e.target.files[0]) }); draft.heroImage = d.url; vCfg(); toast('Foto subida. Tocá Guardar cambios para aplicarla.'); } catch (er) { toast(er.message); }
+  const t = e.target, f = t.files && t.files[0]; if (!f || !draft) return;
+  const isQr = !!t.dataset.qrfile;
+  if (t.id !== 'photo' && !isQr) return;
+  try {
+    toast('Subiendo imagen... espera unos segundos', 60000);
+    const img = isQr ? await shrink(f, 800, .92) : await shrink(f);
+    const d = await post({ action: 'uploadImage', image: img, name: isQr ? 'qr-' + t.dataset.qrfile.replace(/\W+/g, '') : 'portada' });
+    if (!/^https:\/\//.test(d.url || '')) throw new Error('El servidor no devolvió el enlace de la imagen');
+    if (isQr) { const m = draft.methods[t.dataset.qrfile] = draft.methods[t.dataset.qrfile] || {}; m.qr = d.url; }
+    else draft.heroImage = d.url;
+    vCfg(); toast('Imagen subida. Tocá Guardar cambios para aplicarla.', 5000);
+  } catch (er) { t.value = ''; toast('No se pudo subir: ' + (er instanceof TypeError ? 'sin conexión con el servidor' : er.message), 9000); }
 });
 
 // ---------- Acciones (un solo listener) ----------
@@ -281,6 +295,7 @@ $('main').addEventListener('click', async e => {
   if (a === 'tab') { ctab = id; return vCfg(); }
   if (a === 'sw') { draft.accent = id; return vCfg(); }
   if (a === 'nophoto') { draft.heroImage = ''; return vCfg(); }
+  if (a === 'noqr') { if (draft.methods[id]) delete draft.methods[id].qr; return vCfg(); }
   if (a === 'save') return saveCfg();
   if (a === 'chk') return changeKey();
   if (a === 'ver') return detail(r);

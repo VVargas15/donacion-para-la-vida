@@ -567,12 +567,14 @@
         if (!c) continue;
         if (c.on === false) { cryptoWallets.splice(i, 1); continue; }
         if (c.addr) {
+          if (c.addr !== w.addr) w.qrImage = null; // dirección nueva: no mostrar el QR viejo
           w.addr = c.addr;
           if (w.bank) w.lines = [
             '<div style="font-size:20px;font-weight:800;color:#0f2d1a;text-align:center;word-break:break-all;margin-bottom:14px;">' + c.addr.replace(/[<>&"]/g, '') + '</div>',
             w.lines[1]
           ];
         }
+        if (/^https:\/\//.test(c.qr || '')) w.qrImage = c.qr;
       }
     } catch (e) { /* si falla, quedan los valores por defecto */ }
   })();
