@@ -58,6 +58,18 @@ td{padding:15px 18px;border-bottom:1px solid var(--line);vertical-align:middle}t
 #modal img{width:100%;border-radius:10px;border:1px solid var(--line);margin-top:6px}
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:9px;display:none;z-index:30}
 @media(max-width:800px){aside{position:static;width:auto;flex-direction:row;flex-wrap:wrap;padding:12px}aside .brand{width:100%;padding-bottom:6px}aside .out{margin:0 0 0 auto}main{margin:0;padding:20px 16px}}
+
+.mcard{border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px;background:#fff;transition:.15s}
+.mcard.off{background:#f6f6f3;opacity:.7}
+.mhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.mname{font-weight:700;font-size:15px}.mstate{font-size:12px;font-weight:600;margin-left:8px;color:var(--mute)}.mcard:not(.off) .mstate{color:#2d7a4a}
+.tgl{position:relative;display:inline-block;width:46px;height:26px;flex-shrink:0;cursor:pointer}
+.tgl input{opacity:0;width:0;height:0;position:absolute}
+.tgl span{position:absolute;inset:0;background:#cfd3cc;border-radius:26px;transition:.15s}
+.tgl span::before{content:"";position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.15s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.tgl input:checked+span{background:#2d7a4a}.tgl input:checked+span::before{transform:translateX(20px)}
+.tgl input:focus-visible+span{outline:2px solid #2d7a4a;outline-offset:2px}
+.mcard .val{width:100%}
 </style>
 </head>
 <body>
@@ -220,8 +232,8 @@ function vDel() {
 }
 
 // ---------- Configuración ----------
-const DEF = { maxDonors: 100000, accent: '#2d7a4a', heroImage: '', heroX: 50, heroY: 50, heroZoom: 100, heroTitle: 'Cada *donación* cambia una vida.', heroSub: 'Tu aporte llega directo a niños en comunidades vulnerables de América Latina.', campBeneficiary: '', campTitle: '', campWho: '', campUse: '', formSub: '', emailSubject: '', emailBody: '' };
-const TABS = [['apariencia', 'Apariencia'], ['textos', 'Textos de la página'], ['cupo', 'Cupo de donantes'], ['metodos', 'Métodos de pago'], ['correo', 'Correo de confirmación'], ['clave', 'Cambiar clave de acceso']];
+const DEF = { maxDonors: 100000, accent: '#2d7a4a', heroImage: '', heroX: 50, heroY: 50, heroZoom: 100, amounts: '5,10,15,20', minAmount: 5, formTitle: 'Hacer una *donación*', amountLabel: '¿Cuánto querés donar?', customLink: 'Ingresar otro monto', btnText: '💚 Continuar al pago →', trustText: '🔒 Pago seguro · 100% va a los niños', contactEmail: 'donaciones@ong.org', transferBtn: 'Ya transferí →', pageTitle: 'Cambia la vida de los niños', heroTitle: 'Cada *donación* cambia una vida.', heroSub: 'Tu aporte llega directo a niños en comunidades vulnerables de América Latina.', campBeneficiary: '', campTitle: '', campWho: '', campUse: '', formSub: '', emailSubject: '', emailBody: '' };
+const TABS = [['apariencia', 'Apariencia'], ['textos', 'Textos de la página'], ['formulario', 'Formulario y montos'], ['cupo', 'Cupo de donantes'], ['metodos', 'Métodos de pago'], ['correo', 'Correo de confirmación'], ['clave', 'Cambiar clave de acceso']];
 const SW = ['#2d7a4a', '#1d6fb8', '#7c3aed', '#be185d', '#c2410c', '#0f766e'];
 let draft = null, ctab = 'apariencia';
 const hv = (v, d) => isNaN(parseFloat(v)) ? d : parseFloat(v);
@@ -247,8 +259,11 @@ function vCfg() {
     textos: `<div class="sec"><h3>Portada</h3>${fld('heroTitle', 'Título grande', 'Cada *donación* cambia una vida.', 0, 'Poné la palabra resaltada entre asteriscos: *donación*')}${fld('heroSub', 'Frase debajo del título', '', 3)}</div>
       <div class="sec"><h3>Campaña (se muestra arriba del formulario)</h3>${fld('campBeneficiary', 'Apoyo a', '[Beneficiario]')}${fld('campTitle', 'Campaña', '[Título de la campaña]')}${fld('campWho', 'Quién necesita ayuda', '[Describe aquí quién necesita ayuda, la situación y por qué es importante.]', 90)}${fld('campUse', 'En qué se usará el dinero', '[Explica en qué se usará el dinero y adjunta soportes verificables.]', 90, 'Si dejás todo vacío, este recuadro no se muestra.')}</div
       <div class="sec"><h3>Formulario</h3>${fld('formSub', 'Frase arriba del formulario', 'Completa el formulario para que tu aporte llegue directamente a impulsar su recuperación.', 70, 'Si lo dejás vacío se usa la frase por defecto.')}</div>`,
+    formulario: `<div class="sec"><h3>Montos</h3>${fld('amounts', 'Montos sugeridos (separados por coma)', '5,10,15,20', 0, 'Entre 1 y 8 montos. Ejemplo: 5,10,15,20. El primero queda seleccionado al entrar.')}${fld('minAmount', 'Monto mínimo si escriben otro monto', '5', 0, 'Solo números. No se acepta una donación menor a este monto.')}</div>
+      <div class="sec"><h3>Textos del formulario</h3>${fld('formTitle', 'Título del formulario', 'Hacer una *donación*', 0, 'La palabra resaltada va entre asteriscos: *donación*')}${fld('amountLabel', 'Pregunta de los montos', '¿Cuánto querés donar?')}${fld('customLink', 'Texto del enlace "otro monto"', 'Ingresar otro monto')}${fld('btnText', 'Texto del botón principal', '💚 Continuar al pago →')}${fld('trustText', 'Línea de confianza (debajo del botón)', '🔒 Pago seguro · 100% va a los niños')}</div>
+      <div class="sec"><h3>Pago y contacto</h3>${fld('contactEmail', 'Correo al que envían el comprobante', 'donaciones@ong.org')}${fld('transferBtn', 'Texto del botón "Ya transferí"', 'Ya transferí →')}${fld('pageTitle', 'Título de la pestaña del navegador', 'Cambia la vida de los niños')}</div>`,
     cupo: `<div class="sec"><h3>Cupo de donantes</h3><div class="f"><label for="d-maxDonors">Máximo de donaciones</label><input id="d-maxDonors" data-k="maxDonors" type="number" min="1" value="${esc(draft.maxDonors)}"><small>Al llegar a este número, el formulario se reemplaza por el mensaje de cierre. Escribilo sin puntos: 100000.</small></div></div>`,
-    metodos: `<div class="sec"><h3>Métodos de pago</h3>${METHODS.map(x => { const c = draft.methods[x.name] || {}; return `<div class="row"><label class="sw"><input type="checkbox" data-m="${esc(x.name)}" data-f="on" ${c.on === false ? '' : 'checked'}>${x.name}</label><input class="val" data-m="${esc(x.name)}" data-f="addr" aria-label="${esc(x.label)}" placeholder="${esc(x.label)}" value="${esc(c.addr || x.addr)}"></div>${qrBox(x, c)}`; }).join('')}<small style="color:var(--mute)">Desmarcá un método para ocultarlo a los donantes. Si cambiás la dirección y no subís un QR nuevo, la página genera el QR sola con la dirección nueva.</small></div>`,
+    metodos: `<div class="sec"><h3>Métodos de pago</h3><p style="margin:0 0 14px;color:var(--mute);font-size:13px">Activá con el interruptor los métodos que querés que vean los donantes.</p>${METHODS.map(x => { const c = draft.methods[x.name] || {}, on = c.on !== false; return `<div class="mcard ${on ? '' : 'off'}"><div class="mhead"><div><span class="mname">${x.name}</span><span class="mstate">${on ? 'Visible' : 'Oculto'}</span></div><label class="tgl" aria-label="Mostrar ${esc(x.name)} a los donantes"><input type="checkbox" role="switch" data-m="${esc(x.name)}" data-f="on" ${on ? 'checked' : ''}><span></span></label></div><div class="f" style="margin-bottom:6px"><label>${esc(x.label)}</label><input class="val" data-m="${esc(x.name)}" data-f="addr" placeholder="${esc(x.label)}" value="${esc(c.addr || x.addr)}"></div>${qrBox(x, c)}</div>`; }).join('')}<small style="color:var(--mute)">Si cambiás la dirección y no subís un QR nuevo, la página genera el QR sola con la dirección nueva.</small></div>`,
     correo: `<div class="sec"><h3>Correo de confirmación</h3>${fld('emailSubject', 'Asunto', '')}${fld('emailBody', 'Mensaje', '', 170, 'Usá {nombre} y {monto} para insertar los datos del donante. Se envía al verificar una donación.')}</div>`,
     clave: `<div class="sec"><h3>Cambiar clave de acceso</h3><div class="f"><label for="nk">Nueva clave</label><input id="nk" type="password" autocomplete="new-password"><small>Mínimo 8 caracteres. Vas a seguir dentro del panel con la clave nueva.</small></div><button class="btn" data-a="chk">Cambiar clave</button></div>`,
   };
@@ -260,7 +275,12 @@ async function saveCfg() {
   const maxDonors = parseInt(draft.maxDonors, 10);
   if (!maxDonors || maxDonors < 1) return toast('El cupo debe ser un número mayor a 0');
   if (!/^#[0-9a-f]{6}$/i.test(draft.accent)) return toast('Elegí un color válido');
-  try { await post({ action: 'saveConfig', config: { ...draft, maxDonors } }); await refresh('Cambios guardados'); } catch (e) { toast(e.message); }
+  const minAmount = parseInt(draft.minAmount, 10);
+  if (!minAmount || minAmount < 1) return toast('El monto mínimo debe ser un número mayor a 0');
+  const am = String(draft.amounts || '').split(',').map(x => parseInt(x.trim(), 10));
+  if (am.length < 1 || am.length > 8 || am.some(n => !n || n < 1)) return toast('Los montos deben ser entre 1 y 8 números separados por coma, ej: 5,10,15,20');
+  draft.amounts = am.join(',');
+  try { await post({ action: 'saveConfig', config: { ...draft, maxDonors, minAmount } }); await refresh('Cambios guardados'); } catch (e) { toast(e.message); }
 }
 async function changeKey() {
   const nk = $('nk').value; if (nk.length < 8) return toast('La clave debe tener al menos 8 caracteres');
@@ -282,7 +302,7 @@ $('main').addEventListener('input', e => {
   const t = e.target; if (!draft) return;
   if (t.dataset.k) { draft[t.dataset.k] = t.value; if (t.dataset.k === 'accent' && $('prev')) $('prev').style.background = t.value; 
     if (['heroX', 'heroY', 'heroZoom'].includes(t.dataset.k)) hpos(); }
-  else if (t.dataset.m) { const m = draft.methods[t.dataset.m] = draft.methods[t.dataset.m] || {}; if (t.dataset.f === 'on') m.on = t.checked; else m.addr = t.value; }
+  else if (t.dataset.m) { const m = draft.methods[t.dataset.m] = draft.methods[t.dataset.m] || {}; if (t.dataset.f === 'on') { m.on = t.checked; const cd = t.closest('.mcard'); if (cd) { cd.classList.toggle('off', !t.checked); cd.querySelector('.mstate').textContent = t.checked ? 'Visible' : 'Oculto'; } } else m.addr = t.value; }
 });
 $('main').addEventListener('change', async e => {
   const t = e.target, f = t.files && t.files[0]; if (!f || !draft) return;

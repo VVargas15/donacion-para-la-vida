@@ -177,21 +177,19 @@
       <div id="campaign-box" style="display:none;background:#f3f8f4;border:1.5px solid #dcebe1;border-radius:14px;padding:14px 16px;margin-bottom:18px;font-size:13.5px;line-height:1.6;color:#374151;white-space:pre-line"></div>
       <div class="section-label">¿Cuánto querés donar?</div>
       <div class="amounts" id="amts">
-        <button class="amt active" data-val="20">$20</button>
-        <button class="amt" data-val="30">$30</button>
-        <button class="amt" data-val="40">$40</button>
-        <button class="amt" data-val="50">$50</button>
+        <button class="amt active" data-val="5">$5</button>
+        <button class="amt" data-val="10">$10</button>
+        <button class="amt" data-val="15">$15</button>
+        <button class="amt" data-val="20">$20</button>
       </div>
       <span class="custom-link" onclick="toggleCustom()">Ingresar otro monto</span>
       <div class="custom-wrap" id="custom-wrap">
         <span>$</span>
-        <input type="number" id="custom-amt" placeholder="Otro monto" min="1" max="100000" oninput="customAmt(this)" />
+        <input type="number" id="custom-amt" placeholder="Otro monto" min="5" oninput="customAmt(this)" />
       </div>
-      <div id="custom-amt-hint" style="display:none;color:#6b7280;font-size:12.5px;font-weight:500;margin-top:6px;">
-        Monto de $1 hasta $100.000.
-      </div>
+      <div id="custom-amt-hint" style="display:none;color:#6b7280;font-size:12.5px;font-weight:500;margin-top:0;"></div>
       <div id="custom-amt-error" style="display:none;color:#dc2626;font-size:12.5px;font-weight:600;margin-top:6px;">
-        ⚠️ El monto debe estar entre $1 y $100.000.
+        ⚠️ El monto mínimo es $5.
       </div>
 
       <div class="field">
@@ -252,11 +250,11 @@
       </div>
 
       <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:14px 16px;margin-top:1.2rem;font-size:12px;color:#166534;line-height:1.6;">
-        ⚠️ Enviá exactamente el monto indicado. Después de transferir, escríbenos a <strong>donaciones@ong.org</strong> con tu comprobante.
+        ⚠️ Enviá exactamente el monto indicado. Después de transferir, escríbenos a <strong id="contact-email">donaciones@ong.org</strong> con tu comprobante.
       </div>
 
       <div class="btn-row" style="margin-top:1.2rem;">
-        <button class="btn-donate" onclick="goToReceipt()">
+        <button class="btn-donate" id="transfer-btn" onclick="goToReceipt()">
           Ya transferí →
         </button>
       </div>
@@ -296,7 +294,8 @@
 
 
 <script>
-  let selAmt = 20;
+  let FIRST_AMT = 5, MIN_AMT = 5;
+  let selAmt = 5;
   let receiptDataUrl = null;
 
   document.getElementById('amts').addEventListener('click', e => {
@@ -329,7 +328,7 @@
   function customAmt(input) {
     document.querySelectorAll('.amt').forEach(x => x.classList.remove('active'));
     selAmt = parseInt(input.value) || 0;
-    const invalid = !selAmt || selAmt < 1 || selAmt > 100000;
+    const invalid = !selAmt || selAmt < MIN_AMT;
     setCustomError(invalid);
   }
 
@@ -338,7 +337,7 @@
     document.getElementById('f-email').value = '';
     document.getElementById('custom-amt').value = '';
     document.querySelectorAll('.amt').forEach((x,i) => x.classList.toggle('active', i===0));
-    selAmt = 20;
+    selAmt = FIRST_AMT;
     setCustomError(false);
   }
 
@@ -358,7 +357,7 @@
     const name = document.getElementById('f-name').value.trim();
     const email = document.getElementById('f-email').value.trim();
     if (!name || !email) { alert('Por favor completa tu nombre y correo.'); return; }
-    if (!selAmt || selAmt < 1 || selAmt > 100000) { setCustomError(true); return; }
+    if (!selAmt || selAmt < MIN_AMT) { setCustomError(true); return; }
 
     document.getElementById('crypto-amt').textContent = '$' + selAmt + ' USD';
 
@@ -553,7 +552,26 @@
     const esc = t => String(t).replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]));
     if (c.heroTitle) document.getElementById('hero-title').innerHTML = esc(c.heroTitle).replace(/\*(.+?)\*/g, '<span>$1</span>');
     if (c.heroSub) document.getElementById('hero-sub').textContent = c.heroSub;
-        if (c.formSub) document.getElementById('form-sub').textContent = c.formSub;
+            if (c.formSub) document.getElementById('form-sub').textContent = c.formSub;
+    // ---- Formulario y montos ----
+    { const T = (sel, v) => { const el = document.querySelector(sel); if (el && v) el.textContent = v; };
+      if (c.formTitle) document.querySelector('.right-title').innerHTML = esc(c.formTitle).replace(/\*(.+?)\*/g, '<span>$1</span>');
+      T('#form-wrap .section-label', c.amountLabel); T('.custom-link', c.customLink); T('#btn-text', c.btnText);
+      T('.trust-bar', c.trustText); T('#contact-email', c.contactEmail); T('#transfer-btn', c.transferBtn);
+      if (c.pageTitle) document.title = c.pageTitle;
+      const mn = parseInt(c.minAmount, 10);
+      if (mn >= 1) {
+        MIN_AMT = mn; document.getElementById('custom-amt').min = mn;
+        document.getElementById('custom-amt-error').textContent = '⚠️ El monto mínimo es $' + mn + '.';
+      }
+      const am = String(c.amounts || '').split(',').map(x => parseInt(x.trim(), 10)).filter(n => n >= 1).slice(0, 8);
+      if (am.length) {
+        const box = document.getElementById('amts');
+        box.innerHTML = am.map((n, i) => '<button class="amt' + (i === 0 ? ' active' : '') + '" data-val="' + n + '">$' + n + '</button>').join('');
+        if (am.length < 4) box.style.gridTemplateColumns = 'repeat(' + am.length + ',1fr)';
+        FIRST_AMT = am[0]; selAmt = FIRST_AMT;
+      }
+    }
     if (c.campBeneficiary || c.campTitle || c.campWho || c.campUse) {
       const box = document.getElementById('campaign-box');
       box.innerHTML = (c.campBeneficiary ? '<b style="color:var(--accent)">Apoyo a ' + esc(c.campBeneficiary) + '</b>\n' : '') + (c.campTitle ? 'Campaña: ' + esc(c.campTitle) + '\n' : '') + (c.campWho ? '\n' + esc(c.campWho) : '') + (c.campUse ? '\n\n' + esc(c.campUse) : '');
@@ -657,7 +675,7 @@
     document.getElementById('custom-wrap').style.display = 'none';
     // Reset buttons
     document.querySelectorAll('.amt').forEach((x,i) => x.classList.toggle('active', i===0));
-    selAmt = 20;
+    selAmt = FIRST_AMT;
     setCustomError(false);
     // Reset donate button
     const btn = document.getElementById('donate-btn');
